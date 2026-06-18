@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — Rasta Kreol */
+  --color-brand-cream: #F2E9D8;
+  --color-brand-cream-soft: #EDE3CF;
+  --color-brand-paper: #F8F2E5;
+  --color-brand-ink: #1B1F19;
+  --color-brand-ink-soft: #3A413A;
+  --color-brand-muted: #6E7268;
+  --color-brand-border: #D9CFB8;
+  --color-brand-gold: #C7972B;
+  --color-brand-gold-warm: #D8A93F;
+  --color-brand-gold-deep: #A57E22;
+  --color-brand-red: #B0392E;
+  --color-brand-green: #2C5A3B;
+  --color-brand-teal: #3F8A92;
+  --color-brand-stone: #7C7466;
+  --color-brand-success: #3F7A52;
+  --color-brand-error: #A6362C;
+  --color-brand-warning: #C7972B;
+}
