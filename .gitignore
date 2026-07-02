@@ -44,6 +44,7 @@ next-env.d.ts
 
 # project docs (not committed)
 RASTA_KREOL_*.md
+/docs
 
 # editor
 .vscode/

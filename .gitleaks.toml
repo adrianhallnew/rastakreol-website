@@ -1,0 +1,15 @@
+title = "Rasta Kreol — Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Project-level allowlist"
+paths = [
+  ".env.example",
+  "pnpm-lock.yaml",
+]
+regexes = [
+  # Localhost URLs are not secrets
+  '''NEXT_PUBLIC_SERVER_URL=http://localhost''',
+]
