@@ -7,15 +7,11 @@ import { verifyEmailAction } from '../actions'
 type Status = 'pending' | 'success' | 'error'
 
 export function VerifyEmailStatus({ token }: { token: string }) {
-  const [status, setStatus] = useState<Status>('pending')
-  const [error, setError] = useState('')
+  const [status, setStatus] = useState<Status>(token ? 'pending' : 'error')
+  const [error, setError] = useState(token ? '' : 'Missing verification token.')
 
   useEffect(() => {
-    if (!token) {
-      setStatus('error')
-      setError('Missing verification token.')
-      return
-    }
+    if (!token) return
 
     verifyEmailAction(token).then((result) => {
       if (result.success) {
