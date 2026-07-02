@@ -1,10 +1,11 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500&display=swap');
 
 @theme {
   /* Brand palette — Rasta Kreol */
-  --color-brand-cream: #F2E9D8;
-  --color-brand-cream-soft: #EDE3CF;
-  --color-brand-paper: #F8F2E5;
+  --color-brand-cream: #FFFFFF;
+  --color-brand-cream-soft: #F7F7F5;
+  --color-brand-paper: #F7F7F5;
   --color-brand-ink: #1B1F19;
   --color-brand-ink-soft: #3A413A;
   --color-brand-muted: #6E7268;
@@ -19,4 +20,34 @@
   --color-brand-success: #3F7A52;
   --color-brand-error: #A6362C;
   --color-brand-warning: #C7972B;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   16px;
+  --radius-full: 9999px;
+
+  /* Shadows — ink-tinted, warmer than pure black */
+  --shadow-card:   0 1px 2px 0 rgba(27, 31, 25, 0.06);
+  --shadow-raised: 0 2px 8px 0 rgba(27, 31, 25, 0.10);
+  --shadow-sheet:  0 -8px 32px 0 rgba(27, 31, 25, 0.16);
+  --shadow-sticky: 0 1px 0 0 rgba(27, 31, 25, 0.08);
+
+  /* Easing — premium curves, replace all CSS keyword easings */
+  --ease-out-quart:      cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-expo:        cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out-quart:   cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-drawer:         cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Motion durations */
+  --duration-micro:      120ms;
+  --duration-state:      200ms;
+  --duration-layout:     340ms;
+  --duration-layout-out: 260ms;
 }
+
