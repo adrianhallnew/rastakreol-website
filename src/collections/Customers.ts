@@ -6,7 +6,21 @@ export const Customers: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    useSessions: false,
+    verify: {
+      generateEmailHTML: ({ token }) =>
+        `<p>Welcome to Rasta Kreol. Click below to verify your email address:</p>
+        <p><a href="${process.env.NEXT_PUBLIC_SERVER_URL}/account/verify-email?token=${token}">Verify my email</a></p>`,
+      generateEmailSubject: () => 'Verify your Rasta Kreol account',
+    },
+    forgotPassword: {
+      generateEmailHTML: ({ token } = {}) =>
+        `<p>Click below to reset your Rasta Kreol password. This link expires in 1 hour.</p>
+        <p><a href="${process.env.NEXT_PUBLIC_SERVER_URL}/account/reset-password/confirm?token=${token}">Reset my password</a></p>`,
+      generateEmailSubject: () => 'Reset your Rasta Kreol password',
+    },
+  },
   access: {
     read: isStaffOrOwn('id'),
     create: () => true,

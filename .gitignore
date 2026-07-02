@@ -49,6 +49,9 @@ RASTA_KREOL_*.md
 # editor
 .vscode/
 
+# playwright mcp scratch output
+.playwright-mcp/
+
 # claude
 .claude/
 .env*
