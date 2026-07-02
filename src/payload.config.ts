@@ -1,5 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { seoPlugin } from '@payloadcms/plugin-seo'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -32,5 +34,23 @@ export default buildConfig({
     push: false,
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      collections: { media: true },
+      bucket: process.env.STORAGE_BUCKET || '',
+      config: {
+        credentials: {
+          accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY || '',
+          secretAccessKey: process.env.SUPABASE_S3_SECRET_KEY || '',
+        },
+        endpoint: `${process.env.SUPABASE_URL}/storage/v1/s3`,
+        region: 'ap-south-1',
+        forcePathStyle: true,
+      },
+    }),
+    seoPlugin({
+      collections: [],
+      uploadsCollection: 'media',
+    }),
+  ],
 })
