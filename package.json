@@ -15,7 +15,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "bs": "pnpm build && pnpm start",
     "test": "echo \"No tests yet\"",
-    "prepare": "lefthook install"
+    "prepare": "git rev-parse --git-dir 2>/dev/null && lefthook install || true"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.2",
