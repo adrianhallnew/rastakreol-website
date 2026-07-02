@@ -8,7 +8,21 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
+import { Customers } from './collections/Customers'
 import { Media } from './collections/Media'
+import { Categories } from './collections/Categories'
+import { Products } from './collections/Products'
+import { Orders } from './collections/Orders'
+import { Cart } from './collections/Cart'
+import { Wishlist } from './collections/Wishlist'
+import { Reviews } from './collections/Reviews'
+import { Notifications } from './collections/Notifications'
+import { NotificationsReads } from './collections/NotificationsReads'
+import { ContactSubmissions } from './collections/ContactSubmissions'
+
+import { SiteSettings } from './globals/SiteSettings'
+import { HomepageSettings } from './globals/HomepageSettings'
+import { ShippingSettings } from './globals/ShippingSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +34,21 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [
+    Users,
+    Customers,
+    Media,
+    Categories,
+    Products,
+    Orders,
+    Cart,
+    Wishlist,
+    Reviews,
+    Notifications,
+    NotificationsReads,
+    ContactSubmissions,
+  ],
+  globals: [SiteSettings, HomepageSettings, ShippingSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
@@ -49,7 +77,7 @@ export default buildConfig({
       },
     }),
     seoPlugin({
-      collections: [],
+      collections: ['products', 'categories'],
       uploadsCollection: 'media',
     }),
   ],

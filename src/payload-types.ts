@@ -64,11 +64,22 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    customers: CustomerAuthOperations;
   };
   blocks: {};
   collections: {
     users: User;
+    customers: Customer;
     media: Media;
+    categories: Category;
+    products: Product;
+    orders: Order;
+    cart: Cart;
+    wishlist: Wishlist;
+    reviews: Review;
+    notifications: Notification;
+    'notifications-reads': NotificationsRead;
+    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -77,7 +88,17 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    cart: CartSelect<false> | CartSelect<true>;
+    wishlist: WishlistSelect<false> | WishlistSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    'notifications-reads': NotificationsReadsSelect<false> | NotificationsReadsSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,13 +108,21 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    'homepage-settings': HomepageSetting;
+    'shipping-settings': ShippingSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'homepage-settings': HomepageSettingsSelect<false> | HomepageSettingsSelect<true>;
+    'shipping-settings': ShippingSettingsSelect<false> | ShippingSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | Customer;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -117,12 +146,32 @@ export interface UserAuthOperations {
     password: string;
   };
 }
+export interface CustomerAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name: string;
+  role: 'admin' | 'manager' | 'fulfillment' | 'support';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -141,6 +190,45 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  name: string;
+  phone?: string | null;
+  /**
+   * Set automatically by Google OAuth — do not edit manually.
+   */
+  google_id?: string | null;
+  email_verified?: boolean | null;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  /**
+   * E.g. Victoria, Grand Anse, Beau Vallon
+   */
+  district?: string | null;
+  island?: ('mahe' | 'praslin' | 'la_digue' | 'other') | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'customers';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -189,6 +277,255 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * URL-safe identifier. Used in /shop?category=[slug].
+   */
+  slug: string;
+  image?: (number | null) | Media;
+  sort_order?: number | null;
+  visible?: boolean | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Price in whole SCR (e.g. 450 = SCR 450).
+   */
+  price: number;
+  status: 'draft' | 'published' | 'archived';
+  category?: (number | null) | Category;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  variants?:
+    | {
+        size: 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+        sku: string;
+        stock: number;
+        /**
+         * Leave blank to use the product price.
+         */
+        price_override?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  /**
+   * Auto-generated: RK-YYYY-XXXX
+   */
+  order_number?: string | null;
+  customer: number | Customer;
+  status: 'pending' | 'processing' | 'ready' | 'delivered' | 'cancelled' | 'refunded';
+  /**
+   * Audit trail of all status changes.
+   */
+  status_history?:
+    | {
+        status?: string | null;
+        changed_at?: string | null;
+        changed_by?: (number | null) | User;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  items: {
+    product: number | Product;
+    variant_sku: string;
+    size: string;
+    quantity: number;
+    /**
+     * Price snapshot at time of order (SCR).
+     */
+    unit_price: number;
+    id?: string | null;
+  }[];
+  subtotal: number;
+  shipping_cost?: number | null;
+  total: number;
+  shipping_address?: {
+    name?: string | null;
+    phone?: string | null;
+    address_line1?: string | null;
+    address_line2?: string | null;
+    district?: string | null;
+    island?: string | null;
+  };
+  delivery_method?: ('courier' | 'pickup') | null;
+  pickup_location?: string | null;
+  payment_status?: ('pending' | 'completed' | 'failed') | null;
+  /**
+   * MCB payment reference. Unique — prevents duplicate processing.
+   */
+  payment_reference?: string | null;
+  assigned_staff?: (number | null) | User;
+  cancellation_reason?: string | null;
+  customer_notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cart".
+ */
+export interface Cart {
+  id: number;
+  /**
+   * Null for guest carts — use session_id instead.
+   */
+  customer?: (number | null) | Customer;
+  /**
+   * Guest cart identifier (e.g. anonymous session cookie).
+   */
+  session_id?: string | null;
+  items?:
+    | {
+        product: number | Product;
+        variant_sku: string;
+        size: string;
+        quantity: number;
+        /**
+         * Product price at time of adding to cart (SCR).
+         */
+        price_snapshot: number;
+        added_at?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlist".
+ */
+export interface Wishlist {
+  id: number;
+  customer: number | Customer;
+  items?:
+    | {
+        product: number | Product;
+        created_at?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  product: number | Product;
+  customer: number | Customer;
+  rating: '1' | '2' | '3' | '4' | '5';
+  title: string;
+  body: string;
+  approved?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  type: 'new_order' | 'order_status_change' | 'low_stock' | 'payment_received' | 'payment_failed' | 'new_review';
+  title: string;
+  message: string;
+  order?: (number | null) | Order;
+  product?: (number | null) | Product;
+  /**
+   * Leave blank to broadcast to all staff.
+   */
+  recipient?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications-reads".
+ */
+export interface NotificationsRead {
+  id: number;
+  notification: number | Notification;
+  user: number | User;
+  read_at: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status?: ('new' | 'in_progress' | 'resolved') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -216,14 +553,59 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'cart';
+        value: number | Cart;
+      } | null)
+    | ({
+        relationTo: 'wishlist';
+        value: number | Wishlist;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'notifications-reads';
+        value: number | NotificationsRead;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -233,10 +615,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      };
   key?: string | null;
   value?:
     | {
@@ -266,6 +653,38 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  google_id?: T;
+  email_verified?: T;
+  address_line1?: T;
+  address_line2?: T;
+  district?: T;
+  island?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -337,6 +756,201 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  image?: T;
+  sort_order?: T;
+  visible?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  price?: T;
+  status?: T;
+  category?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  variants?:
+    | T
+    | {
+        size?: T;
+        sku?: T;
+        stock?: T;
+        price_override?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  order_number?: T;
+  customer?: T;
+  status?: T;
+  status_history?:
+    | T
+    | {
+        status?: T;
+        changed_at?: T;
+        changed_by?: T;
+        note?: T;
+        id?: T;
+      };
+  items?:
+    | T
+    | {
+        product?: T;
+        variant_sku?: T;
+        size?: T;
+        quantity?: T;
+        unit_price?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  shipping_cost?: T;
+  total?: T;
+  shipping_address?:
+    | T
+    | {
+        name?: T;
+        phone?: T;
+        address_line1?: T;
+        address_line2?: T;
+        district?: T;
+        island?: T;
+      };
+  delivery_method?: T;
+  pickup_location?: T;
+  payment_status?: T;
+  payment_reference?: T;
+  assigned_staff?: T;
+  cancellation_reason?: T;
+  customer_notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cart_select".
+ */
+export interface CartSelect<T extends boolean = true> {
+  customer?: T;
+  session_id?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        variant_sku?: T;
+        size?: T;
+        quantity?: T;
+        price_snapshot?: T;
+        added_at?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlist_select".
+ */
+export interface WishlistSelect<T extends boolean = true> {
+  customer?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        created_at?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  product?: T;
+  customer?: T;
+  rating?: T;
+  title?: T;
+  body?: T;
+  approved?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  type?: T;
+  title?: T;
+  message?: T;
+  order?: T;
+  product?: T;
+  recipient?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications-reads_select".
+ */
+export interface NotificationsReadsSelect<T extends boolean = true> {
+  notification?: T;
+  user?: T;
+  read_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  subject?: T;
+  message?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -374,6 +988,145 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  store_name?: string | null;
+  contact_email?: string | null;
+  phone?: string | null;
+  instagram_url?: string | null;
+  facebook_url?: string | null;
+  logo?: (number | null) | Media;
+  favicon?: (number | null) | Media;
+  /**
+   * Show "Only X left" badge when variant stock falls below this number.
+   */
+  low_stock_threshold?: number | null;
+  announcement?: {
+    enabled?: boolean | null;
+    text?: string | null;
+    link?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage-settings".
+ */
+export interface HomepageSetting {
+  id: number;
+  hero: {
+    image: number | Media;
+    headline?: string | null;
+    cta_label?: string | null;
+    cta_link?: string | null;
+  };
+  featured_products?: (number | Product)[] | null;
+  sections?: {
+    show_featured?: boolean | null;
+    show_brand_story?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipping-settings".
+ */
+export interface ShippingSetting {
+  id: number;
+  /**
+   * Flat courier rate in SCR. Applied to all courier orders.
+   */
+  courier_rate?: number | null;
+  /**
+   * Order total above which courier shipping is free (SCR). Leave blank to disable.
+   */
+  free_shipping_threshold?: number | null;
+  pickup_locations?:
+    | {
+        name: string;
+        address: string;
+        island?: string | null;
+        enabled?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  store_name?: T;
+  contact_email?: T;
+  phone?: T;
+  instagram_url?: T;
+  facebook_url?: T;
+  logo?: T;
+  favicon?: T;
+  low_stock_threshold?: T;
+  announcement?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        link?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage-settings_select".
+ */
+export interface HomepageSettingsSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        image?: T;
+        headline?: T;
+        cta_label?: T;
+        cta_link?: T;
+      };
+  featured_products?: T;
+  sections?:
+    | T
+    | {
+        show_featured?: T;
+        show_brand_story?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipping-settings_select".
+ */
+export interface ShippingSettingsSelect<T extends boolean = true> {
+  courier_rate?: T;
+  free_shipping_threshold?: T;
+  pickup_locations?:
+    | T
+    | {
+        name?: T;
+        address?: T;
+        island?: T;
+        enabled?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
