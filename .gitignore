@@ -51,3 +51,4 @@ RASTA_KREOL_*.md
 
 # claude
 .claude/
+.env*
