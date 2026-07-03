@@ -15,6 +15,9 @@
   --color-brand-gold-deep: #A57E22;
   --color-brand-red: #B0392E;
   --color-brand-green: #2C5A3B;
+  /* Muted from the logo's actual bright blue (#0842A5), same desaturate/darken treatment
+     already applied to red/green/gold — stripe segment only, see StripeMotif. */
+  --color-brand-blue: #224781;
   --color-brand-teal: #3F8A92;
   --color-brand-stone: #7C7466;
   --color-brand-success: #3F7A52;
@@ -69,6 +72,22 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1600ms linear infinite;
+}
+
+/* Reserves space for the fixed BottomNav (68px = BOTTOM_NAV_HEIGHT in
+   src/components/layout/constants.ts — keep these two in sync manually) and drops it
+   at md: and up, where BottomNav hides itself. Plain CSS, not a Tailwind arbitrary-value
+   class: BOTTOM_NAV_HEIGHT is a JS constant and Tailwind can't resolve an interpolated
+   value at build time. Also can't be an inline style — inline styles always beat a
+   stylesheet's md: media query regardless of specificity. */
+.main-bottom-inset {
+  padding-bottom: calc(68px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  .main-bottom-inset {
+    padding-bottom: 0;
+  }
 }
 
 /* Global reduced-motion floor — every transform/animation-driven component in this

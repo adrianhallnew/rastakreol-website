@@ -1,5 +1,8 @@
 import React from 'react'
 import { ToastProvider } from '../../components/ui/toast-provider'
+import { TopNav } from '../../components/layout/TopNav'
+import { BottomNav } from '../../components/layout/BottomNav'
+import { getCurrentCustomer } from '../../lib/auth/get-current-customer'
 import './styles.css'
 
 export const metadata = {
@@ -11,11 +14,21 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const customer = await getCurrentCustomer()
+  const accountHref = customer ? '/account' : '/account/login'
+  // TODO(batch 4): real cart count once the Cart collection is wired up client-side.
+  const cartCount = 0
+
   return (
     <html lang="en">
       <body className="bg-brand-cream text-brand-ink antialiased">
         <ToastProvider>
-          <main>{children}</main>
+          <TopNav accountHref={accountHref} cartCount={cartCount} />
+          {/* BottomNav hides itself on /checkout/** and md:+, but this padding only accounts
+              for md:+ so far — harmless extra whitespace on /checkout at mobile widths for
+              now; batch 5 (checkout) can special-case it if needed. */}
+          <main className="main-bottom-inset">{children}</main>
+          <BottomNav accountHref={accountHref} cartCount={cartCount} />
         </ToastProvider>
       </body>
     </html>

@@ -9,10 +9,10 @@ export function StripeMotif({ height = 4 }: StripeMotifProps) {
       style={{ height: `${height}px` }}
       aria-hidden="true"
     >
-      <div className="flex-1 bg-brand-red" />
+      <div className="flex-1 bg-brand-blue" />
       <div className="flex-1 bg-brand-gold" />
+      <div className="flex-1 bg-brand-red" />
       <div className="flex-1 bg-brand-green" />
-      <div className="flex-1 bg-brand-teal" />
     </div>
   )
 }

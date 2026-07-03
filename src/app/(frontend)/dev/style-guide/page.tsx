@@ -7,13 +7,30 @@ import { Skeleton } from '../../../../components/ui/Skeleton'
 import { BottomSheet } from '../../../../components/ui/BottomSheet'
 import { StripeMotif } from '../../../../components/ui/StripeMotif'
 import { useToast } from '../../../../components/ui/toast-provider'
+import { StickyAddToCart } from '../../../../components/layout/StickyAddToCart'
+import type { StickyAddToCartVariant } from '../../../../components/layout/StickyAddToCart'
 
 const variants = ['primary', 'secondary', 'ghost', 'danger'] as const
 const sizes = ['sm', 'md', 'lg'] as const
 
+const mockVariants: StickyAddToCartVariant[] = [
+  { size: 'S', sku: 'DEMO-S', stock: 5 },
+  { size: 'M', sku: 'DEMO-M', stock: 5 },
+  { size: 'L', sku: 'DEMO-L', stock: 0 },
+]
+
 export default function StyleGuidePage() {
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [showStickyCart, setShowStickyCart] = useState(false)
+  const [selectedSize, setSelectedSize] = useState<string | null>(null)
+  const [addStatus, setAddStatus] = useState<'idle' | 'adding' | 'added'>('idle')
   const { toast } = useToast()
+
+  const handleAddToCart = () => {
+    setAddStatus('adding')
+    setTimeout(() => setAddStatus('added'), 800)
+    setTimeout(() => setAddStatus('idle'), 2000)
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -116,6 +133,24 @@ export default function StyleGuidePage() {
             Trigger info
           </Button>
         </div>
+      </section>
+
+      <section className="py-8">
+        <h2 className="font-display text-xl font-semibold">StickyAddToCart</h2>
+        <div className="mt-4">
+          <Button onClick={() => setShowStickyCart((v) => !v)}>
+            {showStickyCart ? 'Hide' : 'Show'} sticky add-to-cart
+          </Button>
+        </div>
+        {showStickyCart && (
+          <StickyAddToCart
+            variants={mockVariants}
+            selectedSize={selectedSize}
+            onSelectSize={setSelectedSize}
+            onAddToCart={handleAddToCart}
+            status={addStatus}
+          />
+        )}
       </section>
     </div>
   )
