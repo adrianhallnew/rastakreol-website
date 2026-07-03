@@ -1,4 +1,5 @@
 import React from 'react'
+import { ToastProvider } from '../../components/ui/toast-provider'
 import './styles.css'
 
 export const metadata = {
@@ -13,7 +14,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className="bg-brand-cream text-brand-ink antialiased">
-        <main>{children}</main>
+        <ToastProvider>
+          <main>{children}</main>
+        </ToastProvider>
       </body>
     </html>
   )
