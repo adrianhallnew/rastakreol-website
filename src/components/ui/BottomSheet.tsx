@@ -35,6 +35,15 @@ export function BottomSheet({ open, onClose, ariaLabel, children }: BottomSheetP
 
     if (open) {
       if (!dialog.open) dialog.showModal()
+      // showModal()'s native default-focus behavior (focus the first focusable
+      // descendant) can drag the browser's own scroll-into-view behavior along with
+      // it — on a long scrollable sheet on mobile Safari this was observed opening
+      // already scrolled partway down instead of showing the top. Take focus
+      // management back explicitly: focus the sheet itself (not a descendant, so
+      // there's nothing for the browser to scroll to) with `preventScroll`, and
+      // force the internal scroll position to the top regardless.
+      sheetRef.current?.focus({ preventScroll: true })
+      if (sheetRef.current) sheetRef.current.scrollTop = 0
       const raf = requestAnimationFrame(() => setVisible(true))
       return () => cancelAnimationFrame(raf)
     }
@@ -135,15 +144,36 @@ export function BottomSheet({ open, onClose, ariaLabel, children }: BottomSheetP
         'backdrop:transition-opacity backdrop:duration-[240ms] backdrop:ease-out-quart',
         'motion-reduce:[&::backdrop]:transition-none',
       )}
-      style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'transparent', border: 0 }}
+      // dvh/dvw (dynamic viewport), not vh/vw — a <dialog>'s own layout algorithm doesn't
+      // reliably auto-stretch to fill `inset: 0` the way a plain div does (its only child
+      // here is itself position:absolute, contributing no intrinsic size), so omitting
+      // width/height outright collapsed it to 0×0. dvh/dvw track the real CURRENT visual
+      // viewport reactively as browser chrome shows/hides — unlike static vh (sized
+      // against the LARGEST possible viewport, chrome hidden, which on iOS Safari with
+      // chrome showing made the dialog taller than the real screen and anchored the
+      // bottom-0 sheet below the actually visible bottom).
+      style={{ position: 'fixed', inset: 0, width: '100dvw', height: '100dvh', background: 'transparent', border: 0 }}
     >
       <div
         ref={sheetRef}
+        tabIndex={-1}
         className={cn(
-          'absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-lg bg-brand-paper shadow-sheet',
+          // svh, not vh — plain vh on iOS Safari is based on the LARGEST possible
+          // viewport (chrome hidden), so 85vh can visually eat almost the entire
+          // visible screen while the browser's own chrome is showing, reading as
+          // "slides to the top" instead of a proper bottom sheet. svh is pinned to
+          // the smallest possible viewport, so the cap holds regardless of chrome state.
+          'absolute inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-lg bg-brand-paper shadow-sheet',
           'transition-transform ease-drawer motion-reduce:transition-none',
-          visible ? 'translate-y-0 duration-layout' : 'translate-y-full duration-layout-out ease-in-expo',
+          visible
+            ? 'translate-y-0 duration-[var(--motion-layout)]'
+            : 'translate-y-full duration-[var(--motion-layout-out)] ease-in-expo',
         )}
+        // Bottom clearance for the device's own gesture bar/home indicator — 0 on most
+        // Android, nonzero on iOS and some Android. Lives here (not in each sheet's own
+        // content) so every BottomSheet consumer gets it for free, same reasoning as
+        // BottomNav's env(safe-area-inset-bottom) handling in styles.css.
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div
           onPointerDown={handlePointerDown}

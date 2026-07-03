@@ -60,7 +60,7 @@ export function BottomNav({ accountHref, cartCount }: BottomNavProps) {
               aria-label={showBadge ? `${item.label}, ${cartCount} items` : item.label}
               className={cn(
                 'flex flex-1 flex-col items-center justify-center gap-1',
-                'transition-transform duration-micro ease-out-quart motion-reduce:transition-none active:scale-[0.93]',
+                'transition-transform duration-[var(--motion-micro)] ease-out-quart motion-reduce:transition-none active:scale-[0.93]',
                 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
               )}
             >

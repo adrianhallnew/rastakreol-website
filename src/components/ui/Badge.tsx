@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '../../lib/cn'
 
-export type BadgeVariant = 'oos' | 'category' | 'low-stock' | 'count'
+export type BadgeVariant = 'oos' | 'category' | 'low-stock' | 'count' | 'sale'
 
 interface BadgeProps {
   variant: BadgeVariant
@@ -17,6 +17,10 @@ const variantClasses: Record<BadgeVariant, string> = {
   'low-stock': 'inline-flex items-center text-xs font-normal text-brand-error',
   count:
     'inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-red px-1 text-[10px] font-medium leading-none text-white',
+  // Reuses the same bg-brand-gold/text-brand-ink pair Button's primary variant already
+  // uses (5.9:1, AA) — gold-as-background is fine, the project's gold rule is only
+  // about gold as text/icon colour.
+  sale: 'inline-flex items-center rounded-sm bg-brand-gold px-2 py-1 text-xs font-medium text-brand-ink',
 }
 
 export function Badge({ variant, children, className }: BadgeProps) {

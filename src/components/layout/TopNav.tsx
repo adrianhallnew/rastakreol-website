@@ -35,7 +35,7 @@ export function TopNav({ accountHref, cartCount }: TopNavProps) {
         aria-label="Primary"
         className={cn(
           'flex h-14 items-center justify-between bg-brand-paper px-4',
-          'transition-shadow duration-micro ease-out-quart motion-reduce:transition-none',
+          'transition-shadow duration-[var(--motion-micro)] ease-out-quart motion-reduce:transition-none',
           scrolled && 'shadow-sticky',
         )}
       >

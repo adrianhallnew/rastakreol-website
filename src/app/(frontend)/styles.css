@@ -47,11 +47,20 @@
   --ease-in-out-quart:   cubic-bezier(0.76, 0, 0.24, 1);
   --ease-drawer:         cubic-bezier(0.32, 0.72, 0, 1);
 
-  /* Motion durations */
-  --duration-micro:      120ms;
-  --duration-state:      200ms;
-  --duration-layout:     340ms;
-  --duration-layout-out: 260ms;
+  /* Motion durations — `--motion-*`, not `--duration-*`: Tailwind v4 already owns the
+     `--duration-*` namespace internally (its own numeric duration-75/100/150/... scale),
+     and named custom keys added under that reserved prefix were silently dropped — never
+     emitted as real CSS custom properties at all (confirmed empirically: getComputedStyle
+     returned "" for all of them, while sibling --ease-* custom keys, no such collision,
+     worked fine). Every duration-based transition in the app was silently running at
+     Tailwind's generic default (150ms) instead of these intended values. Applied via
+     Tailwind arbitrary-value syntax (`duration-[var(--motion-x)]`) at each call site,
+     not a `duration-x` utility class — arbitrary values skip theme-namespace lookup
+     entirely, so they can't collide the same way. */
+  --motion-micro:      120ms;
+  --motion-state:      200ms;
+  --motion-layout:     340ms;
+  --motion-layout-out: 260ms;
 }
 
 @keyframes shimmer {
@@ -83,6 +92,10 @@
    the device's actual state. Drops to 0 at md:+, matching BottomNav's own `md:hidden`. */
 :root {
   --bottom-nav-height: calc(68px + env(safe-area-inset-bottom));
+  /* TopNav: 56px bar + 4px StripeMotif. Constant — TopNav doesn't currently account
+     for env(safe-area-inset-top) (status bar/notch), unlike BottomNav's inset-bottom
+     handling. Not a reported issue yet; revisit if it becomes one. */
+  --top-nav-height: 60px;
 }
 
 @media (min-width: 768px) {
@@ -93,6 +106,14 @@
 
 .main-bottom-inset {
   padding-bottom: var(--bottom-nav-height);
+}
+
+/* Account/auth pages (login, register, reset-password, verify-email) vertically center
+   a form via min-height + flex justify-center. min-h-dvh alone ignores TopNav/BottomNav
+   already consuming space above/below in normal flow, so the form centered against the
+   wrong (too-tall) box and rendered pushed down with a large gap above it. */
+.account-shell {
+  min-height: calc(100dvh - var(--top-nav-height) - var(--bottom-nav-height));
 }
 
 /* Global reduced-motion floor — every transform/animation-driven component in this

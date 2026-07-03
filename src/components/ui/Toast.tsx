@@ -38,7 +38,7 @@ export function Toast({ type, message, visible, onDismiss, onPause, onResume }: 
       className={cn(
         'flex min-h-12 w-full max-w-sm items-center gap-3 rounded-md bg-brand-ink px-4 py-3 text-white shadow-raised',
         'transition-[transform,opacity] duration-[280ms] ease-out-quint motion-reduce:transition-none',
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 duration-state ease-in-expo',
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 duration-[var(--motion-state)] ease-in-expo',
       )}
     >
       <Icon aria-hidden="true" size={20} className={cn('flex-none', iconColorByType[type])} />

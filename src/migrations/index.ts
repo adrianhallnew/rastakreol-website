@@ -3,6 +3,7 @@ import * as migration_20260702_060228 from './20260702_060228';
 import * as migration_20260702_081339 from './20260702_081339';
 import * as migration_20260702_091709 from './20260702_091709';
 import * as migration_20260703_042118_phase3_admin_cms from './20260703_042118_phase3_admin_cms';
+import * as migration_20260703_082802_products_sale_price from './20260703_082802_products_sale_price';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260703_042118_phase3_admin_cms.up,
     down: migration_20260703_042118_phase3_admin_cms.down,
-    name: '20260703_042118_phase3_admin_cms'
+    name: '20260703_042118_phase3_admin_cms',
+  },
+  {
+    up: migration_20260703_082802_products_sale_price.up,
+    down: migration_20260703_082802_products_sale_price.down,
+    name: '20260703_082802_products_sale_price'
   },
 ];

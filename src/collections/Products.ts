@@ -33,8 +33,11 @@ export const Products: CollectionConfig = {
     afterChange: [notifyLowStock],
   },
   access: {
+    // Staff (users collection) see everything, including drafts/archived — everyone
+    // else (customers, guests) only sees published. Previously checked `!!user` alone,
+    // which let any logged-in *customer* see drafts/archived too, not just staff.
     read: ({ req: { user } }) =>
-      user ? true : { status: { equals: 'published' } },
+      user && user.collection === 'users' ? true : { status: { equals: 'published' } },
     create: isAdminOrManager,
     update: isAdminOrManager,
     delete: isAdmin,
@@ -62,6 +65,18 @@ export const Products: CollectionConfig = {
       admin: {
         description: 'Price in whole SCR (e.g. 450 = SCR 450).',
       },
+    },
+    {
+      name: 'sale_price',
+      type: 'number',
+      admin: {
+        description: 'Only shown when On Sale is checked.',
+      },
+    },
+    {
+      name: 'on_sale',
+      type: 'checkbox',
+      defaultValue: false,
     },
     {
       name: 'status',

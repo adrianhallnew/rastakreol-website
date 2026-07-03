@@ -13,7 +13,7 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6 py-12">
+    <div className="account-shell mx-auto flex max-w-sm flex-col justify-center px-6 py-12">
       <h1 className="text-2xl font-bold text-brand-ink">My account</h1>
       <p className="mt-4 text-brand-ink">{customer.name}</p>
       <p className="text-brand-muted">{customer.email}</p>

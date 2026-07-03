@@ -322,6 +322,11 @@ export interface Product {
    * Price in whole SCR (e.g. 450 = SCR 450).
    */
   price: number;
+  /**
+   * Only shown when On Sale is checked.
+   */
+  sale_price?: number | null;
+  on_sale?: boolean | null;
   status: 'draft' | 'published' | 'archived';
   category?: (number | null) | Category;
   images?:
@@ -781,6 +786,8 @@ export interface ProductsSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   price?: T;
+  sale_price?: T;
+  on_sale?: T;
   status?: T;
   category?: T;
   images?:

@@ -11,7 +11,7 @@ export default async function LoginPage({
   const { redirect } = await searchParams
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6 py-12">
+    <div className="account-shell mx-auto flex max-w-sm flex-col justify-center px-6 py-12">
       <h1 className="text-2xl font-bold text-brand-ink">Log in</h1>
       <LoginForm redirectTo={redirect ?? '/account'} />
     </div>
