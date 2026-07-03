@@ -339,6 +339,10 @@ export interface Product {
          * Leave blank to use the product price.
          */
         price_override?: number | null;
+        /**
+         * Leave blank to use the site-wide default.
+         */
+        low_stock_threshold?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -364,7 +368,11 @@ export interface Order {
    */
   order_number?: string | null;
   customer: number | Customer;
-  status: 'pending' | 'processing' | 'ready' | 'delivered' | 'cancelled' | 'refunded';
+  status: 'pending' | 'confirmed' | 'processing' | 'ready' | 'delivered' | 'completed' | 'cancelled' | 'refunded';
+  /**
+   * Optional note for this status change. Saved to status history.
+   */
+  status_change_note?: string | null;
   /**
    * Audit trail of all status changes.
    */
@@ -788,6 +796,7 @@ export interface ProductsSelect<T extends boolean = true> {
         sku?: T;
         stock?: T;
         price_override?: T;
+        low_stock_threshold?: T;
         id?: T;
       };
   meta?:
@@ -808,6 +817,7 @@ export interface OrdersSelect<T extends boolean = true> {
   order_number?: T;
   customer?: T;
   status?: T;
+  status_change_note?: T;
   status_history?:
     | T
     | {

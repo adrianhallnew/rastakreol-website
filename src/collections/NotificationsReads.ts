@@ -6,6 +6,7 @@ export const NotificationsReads: CollectionConfig = {
   admin: {
     useAsTitle: 'id',
   },
+  indexes: [{ unique: true, fields: ['notification', 'user'] }],
   access: {
     read: isStaff,
     create: () => false,

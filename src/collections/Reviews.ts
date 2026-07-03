@@ -1,10 +1,27 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
 import { isAdmin, isAdminOrManager } from '../lib/access'
+import { notify } from '../hooks/notify'
+
+const notifyNewReview: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
+  if (operation !== 'create') return doc
+
+  await notify(req, {
+    type: 'new_review',
+    product: doc.product,
+    title: `New review: ${doc.title}`,
+    message: `A new ${doc.rating}-star review was submitted and needs moderation.`,
+  })
+
+  return doc
+}
 
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
     useAsTitle: 'title',
+  },
+  hooks: {
+    afterChange: [notifyNewReview],
   },
   access: {
     read: ({ req: { user } }) =>

@@ -1,10 +1,36 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
 import { isAdmin, isAdminOrManager } from '../lib/access'
+import { checkLowStockAndNotify } from '../hooks/notify'
+
+const notifyLowStock: CollectionAfterChangeHook = async ({ doc, previousDoc, operation, req }) => {
+  if (operation !== 'update' || !previousDoc) return doc
+
+  const prevVariants: Array<{ sku: string; stock: number }> = previousDoc.variants ?? []
+
+  for (const variant of doc.variants ?? []) {
+    const prev = prevVariants.find((v) => v.sku === variant.sku)
+    if (!prev || variant.stock >= prev.stock) continue
+
+    await checkLowStockAndNotify(req, {
+      productId: doc.id,
+      variantSku: variant.sku,
+      size: variant.size,
+      previousStock: prev.stock,
+      newStock: variant.stock,
+      thresholdOverride: variant.low_stock_threshold,
+    })
+  }
+
+  return doc
+}
 
 export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'name',
+  },
+  hooks: {
+    afterChange: [notifyLowStock],
   },
   access: {
     read: ({ req: { user } }) =>
@@ -99,6 +125,13 @@ export const Products: CollectionConfig = {
           type: 'number',
           admin: {
             description: 'Leave blank to use the product price.',
+          },
+        },
+        {
+          name: 'low_stock_threshold',
+          type: 'number',
+          admin: {
+            description: 'Leave blank to use the site-wide default.',
           },
         },
       ],

@@ -34,6 +34,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      header: ['/components/admin/NotificationsHeader#NotificationsHeader'],
+    },
   },
   collections: [
     Users,
