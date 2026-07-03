@@ -3,7 +3,6 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Toast } from './Toast'
-import { BOTTOM_NAV_HEIGHT } from '../layout/constants'
 
 export type ToastType = 'success' | 'error' | 'info'
 
@@ -68,11 +67,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
+      {/* Sits above BottomNav (design.md §3.6) via the shared --bottom-nav-height var
+          (styles.css), which already accounts for env(safe-area-inset-bottom) and drops
+          to 0 at md:+. BottomNav also hides on /checkout/**, which this doesn't yet
+          account for — batch 5 can revisit once checkout pages actually exist. */}
       <div
         className="pointer-events-none fixed inset-x-0 z-40 flex justify-center px-4"
-        // Sits above BottomNav (design.md §3.6). BottomNav hides on /checkout/**, which this
-        // doesn't yet account for — batch 5 can revisit once checkout pages actually exist.
-        style={{ bottom: `calc(${BOTTOM_NAV_HEIGHT}px + env(safe-area-inset-bottom, 0px) + 16px)` }}
+        style={{ bottom: 'calc(var(--bottom-nav-height) + 16px)' }}
       >
         {current && (
           <div className="pointer-events-auto">

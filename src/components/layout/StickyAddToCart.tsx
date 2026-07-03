@@ -3,7 +3,6 @@
 import { StripeMotif } from '../ui/StripeMotif'
 import { Button } from '../ui/Button'
 import { cn } from '../../lib/cn'
-import { BOTTOM_NAV_HEIGHT } from './constants'
 
 export interface StickyAddToCartVariant {
   size: string
@@ -40,7 +39,7 @@ export function StickyAddToCart({
   const disabled = allOutOfStock || status === 'added' || !selectedVariant
 
   return (
-    <div className="fixed inset-x-0 z-30" style={{ bottom: BOTTOM_NAV_HEIGHT }}>
+    <div className="fixed inset-x-0 z-30" style={{ bottom: 'var(--bottom-nav-height)' }}>
       <StripeMotif height={4} />
       <div className="flex items-center gap-3 bg-brand-paper px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-sheet">
         <div className="flex gap-2">

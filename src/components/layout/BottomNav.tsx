@@ -40,9 +40,12 @@ export function BottomNav({ accountHref, cartCount }: BottomNavProps) {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">
       <StripeMotif height={4} />
+      {/* min-h-16, not h-16: with a fixed height the safe-area padding below would
+          consume from the 64px box instead of adding to it, squeezing the icon row
+          (this was the actual bug — see the note on --bottom-nav-height in styles.css). */}
       <nav
         aria-label="Main navigation"
-        className="flex h-16 bg-brand-paper pb-[env(safe-area-inset-bottom)]"
+        className="flex min-h-16 bg-brand-paper pb-[env(safe-area-inset-bottom)]"
       >
         {items.map((item) => {
           const active = item.isActive(pathname)

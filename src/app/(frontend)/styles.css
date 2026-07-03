@@ -74,20 +74,25 @@
   animation: shimmer 1600ms linear infinite;
 }
 
-/* Reserves space for the fixed BottomNav (68px = BOTTOM_NAV_HEIGHT in
-   src/components/layout/constants.ts — keep these two in sync manually) and drops it
-   at md: and up, where BottomNav hides itself. Plain CSS, not a Tailwind arbitrary-value
-   class: BOTTOM_NAV_HEIGHT is a JS constant and Tailwind can't resolve an interpolated
-   value at build time. Also can't be an inline style — inline styles always beat a
-   stylesheet's md: media query regardless of specificity. */
-.main-bottom-inset {
-  padding-bottom: calc(68px + env(safe-area-inset-bottom));
+/* Single source of truth for BottomNav's real rendered height (64px content +
+   env(safe-area-inset-bottom), which is NOT a fixed value — it changes when Safari's
+   own chrome hides/shows on scroll, since the page then extends further down). Every
+   consumer that needs to sit above BottomNav (StickyAddToCart, the toast viewport,
+   <main>'s bottom padding via .main-bottom-inset below) reads this live instead of
+   trusting a hardcoded number, so they can't drift out of sync with each other or with
+   the device's actual state. Drops to 0 at md:+, matching BottomNav's own `md:hidden`. */
+:root {
+  --bottom-nav-height: calc(68px + env(safe-area-inset-bottom));
 }
 
 @media (min-width: 768px) {
-  .main-bottom-inset {
-    padding-bottom: 0;
+  :root {
+    --bottom-nav-height: 0px;
   }
+}
+
+.main-bottom-inset {
+  padding-bottom: var(--bottom-nav-height);
 }
 
 /* Global reduced-motion floor — every transform/animation-driven component in this
