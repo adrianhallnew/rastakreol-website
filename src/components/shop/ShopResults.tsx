@@ -12,12 +12,19 @@ interface ShopResultsProps {
   initialHasNextPage: boolean
   filters: ShopFilters
   categorySlug?: string
+  wishlistedProductIds?: number[]
 }
 
 // Parent page must render this with `key={searchParamsString}` so a new committed
 // filter remounts it fresh — otherwise this component's local "loaded pages" state
 // would persist across filter changes instead of resetting to page 1.
-export function ShopResults({ initialItems, initialHasNextPage, filters, categorySlug }: ShopResultsProps) {
+export function ShopResults({
+  initialItems,
+  initialHasNextPage,
+  filters,
+  categorySlug,
+  wishlistedProductIds,
+}: ShopResultsProps) {
   const [items, setItems] = useState(initialItems)
   const [hasNextPage, setHasNextPage] = useState(initialHasNextPage)
   const [page, setPage] = useState(1)
@@ -34,7 +41,7 @@ export function ShopResults({ initialItems, initialHasNextPage, filters, categor
 
   return (
     <div>
-      <ProductGrid products={items} />
+      <ProductGrid products={items} wishlistedProductIds={wishlistedProductIds} />
       {hasNextPage && (
         <div className="mt-8 flex justify-center">
           <Button variant="secondary" size="lg" loading={isPending} onClick={handleLoadMore}>

@@ -8,6 +8,7 @@ import { parseShopFilters } from '../../../../lib/shop/parse-filters'
 import { ShopFilterBar } from '../../../../components/shop/ShopFilterBar'
 import { ShopResults } from '../../../../components/shop/ShopResults'
 import { EmptyState } from '../../../../components/ui/EmptyState'
+import { getWishlistedProductIds } from '../../../../lib/wishlist/actions'
 
 type RawSearchParams = Record<string, string | string[] | undefined>
 type Params = Promise<{ category: string }>
@@ -49,10 +50,11 @@ export default async function ShopCategoryPage({
   const rawParams = await searchParams
   const filters = parseShopFilters(rawParams, category.slug)
 
-  const [categories, countBasis, page] = await Promise.all([
+  const [categories, countBasis, page, wishlistedProductIds] = await Promise.all([
     queryVisibleCategories(),
     queryCountBasis(),
     queryProducts(filters, 1, category.slug),
+    getWishlistedProductIds(),
   ])
 
   const categoryTotal = countBasis.filter((item) => item.categorySlug === category.slug).length
@@ -85,6 +87,7 @@ export default async function ShopCategoryPage({
             initialHasNextPage={page.hasNextPage}
             filters={filters}
             categorySlug={category.slug}
+            wishlistedProductIds={wishlistedProductIds}
           />
         )}
       </div>

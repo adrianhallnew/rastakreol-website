@@ -18,7 +18,7 @@ export function RequestResetForm() {
     <form action={formAction} className="mt-6 flex flex-col gap-4">
       <label className="flex flex-col gap-1 text-sm text-brand-ink">
         Email
-        <input name="email" type="email" required className="rounded-md border border-brand-ink/20 px-3 py-2" />
+        <input name="email" type="email" required className="rounded-md border border-brand-ink/20 px-3 py-2 text-base" />
       </label>
       {state?.success === false && <p className="text-sm text-red-600">{state.error}</p>}
       <button

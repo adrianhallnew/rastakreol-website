@@ -3,6 +3,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { setCustomerCookie, clearCustomerCookie } from '../../../lib/auth/set-customer-cookie'
+import { mergeGuestCartIntoCustomer } from '../../../lib/cart/actions'
 
 type ActionResult = { success: true } | { success: false; error: string }
 
@@ -21,10 +22,13 @@ export async function registerAction(
   const payload = await getPayload({ config })
 
   try {
-    await payload.create({
+    const customer = await payload.create({
       collection: 'customers',
       data: { name, email, password },
     })
+    // No session cookie yet (email verification required before login), but the customer
+    // record already exists — fold any guest cart in now so it's there once they verify.
+    await mergeGuestCartIntoCustomer(customer.id)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Registration failed.' }
@@ -50,11 +54,12 @@ export async function loginAction(
       data: { email, password },
     })
 
-    if (!result.token) {
+    if (!result.token || !result.user) {
       return { success: false, error: 'Login failed.' }
     }
 
     await setCustomerCookie(result.token)
+    await mergeGuestCartIntoCustomer(result.user.id)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Invalid email or password.' }

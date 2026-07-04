@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { StripeMotif } from '../../components/ui/StripeMotif'
 import { ProductGrid } from '../../components/shop/ProductGrid'
 import { buttonVariants } from '../../components/ui/button-variants'
+import { getWishlistedProductIds } from '../../lib/wishlist/actions'
 import type { Product } from '../../payload-types'
 
 async function getHomepageData() {
@@ -25,11 +26,13 @@ async function getHomepageData() {
     featured = result.docs
   }
 
-  return { homepage, featured }
+  const wishlistedProductIds = await getWishlistedProductIds()
+
+  return { homepage, featured, wishlistedProductIds }
 }
 
 export default async function HomePage() {
-  const { homepage, featured } = await getHomepageData()
+  const { homepage, featured, wishlistedProductIds } = await getHomepageData()
 
   const heroImage = typeof homepage.hero?.image === 'object' ? homepage.hero.image : undefined
   const heroImageUrl = heroImage?.sizes?.full?.url || heroImage?.url
@@ -88,7 +91,7 @@ export default async function HomePage() {
           <section className="px-4 py-8">
             <h2 className="font-display text-xl font-semibold text-brand-ink">New in</h2>
             <div className="mt-4">
-              <ProductGrid products={featured} />
+              <ProductGrid products={featured} wishlistedProductIds={wishlistedProductIds} />
             </div>
           </section>
         </>

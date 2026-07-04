@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getCurrentCustomer } from '../../../lib/auth/get-current-customer'
 import { logoutAction } from './actions'
@@ -17,6 +18,9 @@ export default async function AccountPage() {
       <h1 className="text-2xl font-bold text-brand-ink">My account</h1>
       <p className="mt-4 text-brand-ink">{customer.name}</p>
       <p className="text-brand-muted">{customer.email}</p>
+      <Link href="/account/wishlist" className="mt-6 text-sm font-medium text-brand-ink underline">
+        My wishlist
+      </Link>
       <form action={logoutAction} className="mt-6">
         <button
           type="submit"

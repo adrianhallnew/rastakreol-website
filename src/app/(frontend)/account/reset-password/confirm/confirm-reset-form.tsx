@@ -29,7 +29,7 @@ export function ConfirmResetForm({ token }: { token: string }) {
           type="password"
           required
           minLength={8}
-          className="rounded-md border border-brand-ink/20 px-3 py-2"
+          className="rounded-md border border-brand-ink/20 px-3 py-2 text-base"
         />
       </label>
       {state?.success === false && <p className="text-sm text-red-600">{state.error}</p>}

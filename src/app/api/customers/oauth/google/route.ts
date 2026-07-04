@@ -22,7 +22,8 @@ export async function GET(req: Request) {
 
   const cookieOpts = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    // Real request protocol, not NODE_ENV — see src/lib/http/is-secure-request.ts.
+    secure: req.headers.get('x-forwarded-proto') === 'https',
     sameSite: 'lax' as const,
     maxAge: 600,
     path: '/',

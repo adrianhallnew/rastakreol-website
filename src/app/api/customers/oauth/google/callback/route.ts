@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT } from 'jose'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { mergeGuestCartIntoCustomer } from '../../../../../../lib/cart/actions'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -99,12 +100,17 @@ export async function GET(req: NextRequest) {
       .setExpirationTime('2h')
       .sign(secret)
 
+    await mergeGuestCartIntoCustomer(customer.id)
+
     const res = NextResponse.redirect(`${base}${redirectAfter}`)
     res.cookies.delete('oauth_state')
     res.cookies.delete('oauth_redirect')
     res.cookies.set('payload-token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      // Real request protocol, not NODE_ENV — see src/lib/http/is-secure-request.ts for
+      // why: `next start` sets NODE_ENV=production regardless of whether the connection
+      // is actually HTTPS, which broke cookie persistence when testing over a LAN IP.
+      secure: req.headers.get('x-forwarded-proto') === 'https',
       sameSite: 'lax',
       maxAge: 7200,
       path: '/',

@@ -165,7 +165,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         )}
       </div>
 
-      <PDPAddToCart variants={variants} />
+      <PDPAddToCart productId={product.id} variants={variants} />
     </div>
   )
 }

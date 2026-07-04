@@ -7,9 +7,10 @@ import type { Product } from '../../payload-types'
 
 interface ProductCardProps {
   product: Product
+  isWishlisted?: boolean
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, isWishlisted = false }: ProductCardProps) {
   const image = product.images?.[0]?.image
   const imageUrl = typeof image === 'object' ? image.sizes?.card?.url || image.url : undefined
   const imageAlt = typeof image === 'object' ? image.alt : product.name
@@ -45,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
             className={`object-cover transition-transform duration-[var(--motion-state)] ease-out-quart group-hover:scale-[1.015] ${isOutOfStock ? 'opacity-40' : ''}`}
           />
         )}
-        <WishlistButtonToggle productName={product.name} />
+        <WishlistButtonToggle productId={product.id} productName={product.name} initiallySaved={isWishlisted} />
         {isOutOfStock && (
           <span className="absolute left-2 top-2">
             <Badge variant="oos">Out of stock</Badge>

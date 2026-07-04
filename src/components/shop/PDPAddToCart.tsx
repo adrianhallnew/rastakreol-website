@@ -1,27 +1,39 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { StickyAddToCart } from '../layout/StickyAddToCart'
 import { useToast } from '../ui/toast-provider'
+import { addToCartAction } from '../../lib/cart/actions'
 import type { StickyAddToCartVariant } from '../layout/StickyAddToCart'
 
 interface PDPAddToCartProps {
+  productId: number
   variants: StickyAddToCartVariant[]
 }
 
-// No Cart collection mutation yet — real persistence is batch 4. Shows a
-// confirmation toast so the interaction still feels complete in the meantime.
-export function PDPAddToCart({ variants }: PDPAddToCartProps) {
+export function PDPAddToCart({ productId, variants }: PDPAddToCartProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'adding' | 'added'>('idle')
   const { toast } = useToast()
+  const router = useRouter()
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    const variant = variants.find((v) => v.size === selectedSize)
+    if (!variant) return
+
     setStatus('adding')
-    setTimeout(() => {
-      setStatus('added')
-      toast({ type: 'success', message: 'Added to cart.' })
-    }, 400)
+    const result = await addToCartAction(productId, variant.sku, variant.size, 1)
+
+    if (!result.success) {
+      setStatus('idle')
+      toast({ type: 'error', message: result.error })
+      return
+    }
+
+    setStatus('added')
+    toast({ type: 'success', message: 'Added to cart.' })
+    router.refresh() // picks up the real cart count in the nav (server-rendered in layout.tsx)
     setTimeout(() => setStatus('idle'), 2400)
   }
 

@@ -3,6 +3,7 @@ import { ToastProvider } from '../../components/ui/toast-provider'
 import { TopNav } from '../../components/layout/TopNav'
 import { BottomNav } from '../../components/layout/BottomNav'
 import { getCurrentCustomer } from '../../lib/auth/get-current-customer'
+import { getCartItemCount } from '../../lib/cart/actions'
 import './styles.css'
 
 export const metadata = {
@@ -16,8 +17,7 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const customer = await getCurrentCustomer()
   const accountHref = customer ? '/account' : '/account/login'
-  // TODO(batch 4): real cart count once the Cart collection is wired up client-side.
-  const cartCount = 0
+  const cartCount = await getCartItemCount()
 
   return (
     <html lang="en">

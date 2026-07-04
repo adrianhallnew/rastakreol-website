@@ -11,12 +11,21 @@ async function deriveSigningKey(secret: string): Promise<Uint8Array> {
   return new TextEncoder().encode(hex.slice(0, 32))
 }
 
-export async function verifyCustomerTokenEdge(token: string): Promise<boolean> {
+// Returns the decoded customer id if the token is a validly-signed customer token, else null.
+// Deliberately bypasses Payload's own payload.auth()/extractJWT cookie-extraction path — that
+// path rejects a request whose Origin doesn't match its CSRF allowlist, falling back to
+// Sec-Fetch-Site when Origin is absent, and iOS Safari sends neither on the RSC fetch Next.js
+// makes right after login. That's a real Next.js/iOS-Safari header-omission quirk on an
+// otherwise fully legitimate same-origin request, not a security-relevant rejection to
+// preserve — this function verifies the JWT signature itself (the actual security boundary)
+// without that additional, environment-fragile gate.
+export async function verifyCustomerToken(token: string): Promise<number | null> {
   try {
     const key = await deriveSigningKey(process.env.PAYLOAD_SECRET!)
     const { payload } = await jwtVerify(token, key)
-    return payload.collection === 'customers'
+    if (payload.collection !== 'customers' || typeof payload.id !== 'number') return null
+    return payload.id
   } catch {
-    return false
+    return null
   }
 }

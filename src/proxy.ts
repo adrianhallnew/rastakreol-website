@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { verifyCustomerTokenEdge } from './lib/auth/verify-token-edge'
+import { verifyCustomerToken } from './lib/auth/verify-token-edge'
 
 const PUBLIC_ACCOUNT_PATHS = ['/account/login', '/account/register', '/account/verify-email', '/account/reset-password']
 
@@ -12,7 +12,7 @@ export async function proxy(req: NextRequest) {
 
   const token = req.cookies.get('payload-token')?.value
 
-  if (token && (await verifyCustomerTokenEdge(token))) {
+  if (token && (await verifyCustomerToken(token)) !== null) {
     return NextResponse.next()
   }
 

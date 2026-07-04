@@ -5,6 +5,7 @@ import { parseShopFilters } from '../../../lib/shop/parse-filters'
 import { ShopFilterBar } from '../../../components/shop/ShopFilterBar'
 import { ShopResults } from '../../../components/shop/ShopResults'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { getWishlistedProductIds } from '../../../lib/wishlist/actions'
 
 export const metadata: Metadata = {
   title: 'Shop',
@@ -18,10 +19,11 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const rawParams = await searchParams
   const filters = parseShopFilters(rawParams)
 
-  const [categories, countBasis, page] = await Promise.all([
+  const [categories, countBasis, page, wishlistedProductIds] = await Promise.all([
     queryVisibleCategories(),
     queryCountBasis(),
     queryProducts(filters, 1),
+    getWishlistedProductIds(),
   ])
 
   const catalogEmpty = countBasis.length === 0
@@ -52,6 +54,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             initialItems={page.items}
             initialHasNextPage={page.hasNextPage}
             filters={filters}
+            wishlistedProductIds={wishlistedProductIds}
           />
         )}
       </div>
