@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { CartLineItem } from './CartLineItem'
 import { CartSummary } from './CartSummary'
 import { EmptyState } from '../ui/EmptyState'
 import { StripeMotif } from '../ui/StripeMotif'
 import { useToast } from '../ui/toast-provider'
+import { useCartCount } from './CartCountProvider'
 import { updateCartItemQuantityAction, removeCartItemAction } from '../../lib/cart/actions'
 import type { CartLineItemData } from './CartLineItem'
 
@@ -20,8 +20,8 @@ interface CartContentsProps {
 export function CartContents({ initialItems }: CartContentsProps) {
   const [items, setItems] = useState(initialItems)
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
   const { toast } = useToast()
+  const { setCount } = useCartCount()
 
   const subtotal = items.reduce((sum, item) => sum + item.priceSnapshot * item.quantity, 0)
 
@@ -35,7 +35,7 @@ export function CartContents({ initialItems }: CartContentsProps) {
         toast({ type: 'error', message: result.error })
         return
       }
-      router.refresh() // nav cart badge is server-rendered in layout.tsx
+      setCount(result.cartCount)
     })
   }
 
@@ -49,7 +49,7 @@ export function CartContents({ initialItems }: CartContentsProps) {
         toast({ type: 'error', message: result.error })
         return
       }
-      router.refresh()
+      setCount(result.cartCount)
     })
   }
 

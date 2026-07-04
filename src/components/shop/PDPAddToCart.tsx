@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { StickyAddToCart } from '../layout/StickyAddToCart'
 import { useToast } from '../ui/toast-provider'
+import { useCartCount } from '../cart/CartCountProvider'
 import { addToCartAction } from '../../lib/cart/actions'
 import type { StickyAddToCartVariant } from '../layout/StickyAddToCart'
 
@@ -16,7 +16,7 @@ export function PDPAddToCart({ productId, variants }: PDPAddToCartProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'adding' | 'added'>('idle')
   const { toast } = useToast()
-  const router = useRouter()
+  const { setCount } = useCartCount()
 
   const handleAddToCart = async () => {
     const variant = variants.find((v) => v.size === selectedSize)
@@ -33,7 +33,7 @@ export function PDPAddToCart({ productId, variants }: PDPAddToCartProps) {
 
     setStatus('added')
     toast({ type: 'success', message: 'Added to cart.' })
-    router.refresh() // picks up the real cart count in the nav (server-rendered in layout.tsx)
+    setCount(result.cartCount)
     setTimeout(() => setStatus('idle'), 2400)
   }
 

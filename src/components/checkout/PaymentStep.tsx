@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '../ui/Button'
+import { useCartCount } from '../cart/CartCountProvider'
 import { formatPrice } from '../../lib/format-price'
 import { createOrderAction } from '../../lib/checkout/actions'
 
@@ -22,6 +23,7 @@ export function PaymentStep({ subtotal, shippingCost, deliveryMethod, pickupLoca
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { setCount } = useCartCount()
   const total = subtotal + shippingCost
 
   const handlePay = () => {
@@ -31,14 +33,14 @@ export function PaymentStep({ subtotal, shippingCost, deliveryMethod, pickupLoca
         setError(result.error)
         return
       }
+      setCount(0) // cart was just cleared server-side as part of order creation
       router.push(`/order/${result.orderId}`)
-      router.refresh() // nav cart badge is server-rendered in layout.tsx; cart was just cleared
     })
   }
 
   return (
     <div className="mt-6">
-      <div className="space-y-2 rounded-md border border-brand-border p-4">
+      <div className="space-y-2 rounded-md border border-brand-stone p-4">
         <div className="flex justify-between text-sm">
           <span className="text-brand-muted">Subtotal</span>
           <span className="text-brand-ink">{formatPrice(subtotal)}</span>
@@ -54,7 +56,7 @@ export function PaymentStep({ subtotal, shippingCost, deliveryMethod, pickupLoca
       </div>
 
       {error && (
-        <p className="mt-4 text-sm text-red-600" role="alert">
+        <p className="mt-4 text-sm text-brand-error" role="alert">
           {error}
         </p>
       )}

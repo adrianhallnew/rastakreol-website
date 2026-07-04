@@ -7,10 +7,10 @@ import type { LucideIcon } from 'lucide-react'
 import { StripeMotif } from '../ui/StripeMotif'
 import { Badge } from '../ui/Badge'
 import { cn } from '../../lib/cn'
+import { useCartCount } from '../cart/CartCountProvider'
 
 interface BottomNavProps {
   accountHref: string
-  cartCount: number
 }
 
 interface NavItem {
@@ -20,8 +20,9 @@ interface NavItem {
   isActive: (pathname: string) => boolean
 }
 
-export function BottomNav({ accountHref, cartCount }: BottomNavProps) {
+export function BottomNav({ accountHref }: BottomNavProps) {
   const pathname = usePathname()
+  const { count: cartCount } = useCartCount()
 
   if (pathname.startsWith('/checkout')) return null
 
@@ -79,7 +80,7 @@ export function BottomNav({ accountHref, cartCount }: BottomNavProps) {
               </span>
               <span
                 className={cn(
-                  'text-xs uppercase tracking-[0.04em]',
+                  'text-xs uppercase tracking-[0.08em]',
                   active ? 'font-medium text-brand-ink' : 'font-normal text-brand-muted',
                 )}
               >

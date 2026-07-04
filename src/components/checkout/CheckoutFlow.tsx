@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AddressStep } from './AddressStep'
 import { DeliveryStep } from './DeliveryStep'
 import { PaymentStep } from './PaymentStep'
@@ -21,15 +21,28 @@ export function CheckoutFlow({ customer, subtotal, pickupLocations, courierRate,
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [deliveryMethod, setDeliveryMethod] = useState<'courier' | 'pickup'>('courier')
   const [pickupLocationLabel, setPickupLocationLabel] = useState<string | null>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+
+  // Real landmark heading + focus target + live announcement in one element — a keyboard/
+  // screen-reader user previously had nothing to land on across all 3 steps, and no signal
+  // a step change happened at all (audit findings: zero headings, no focus management).
+  useEffect(() => {
+    headingRef.current?.focus({ preventScroll: true })
+  }, [step])
 
   const freeShipping = freeShippingThreshold != null && subtotal >= freeShippingThreshold
   const shippingCost = deliveryMethod === 'courier' && !freeShipping ? courierRate : 0
 
   return (
     <div className="px-4 py-6">
-      <p className="text-sm text-brand-muted">
+      <h1
+        ref={headingRef}
+        tabIndex={-1}
+        aria-live="polite"
+        className="text-sm font-normal text-brand-muted focus:outline-none"
+      >
         Step {step} of 3 — {STEP_LABELS[step - 1]}
-      </p>
+      </h1>
 
       {step === 1 && <AddressStep customer={customer} onContinue={() => setStep(2)} />}
 

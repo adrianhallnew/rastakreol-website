@@ -56,7 +56,7 @@ export function FilterSheet({ open, onClose, categories, countBasis, currentFilt
           <button
             type="button"
             onClick={handleClear}
-            className="text-sm font-medium text-brand-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
+            className="flex min-h-11 items-center px-2 text-sm font-medium text-brand-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
           >
             Clear
           </button>
@@ -111,7 +111,7 @@ export function FilterSheet({ open, onClose, categories, countBasis, currentFilt
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, minPrice: e.target.value ? Number(e.target.value) : undefined }))
                 }
-                className="h-11 w-full rounded-sm border border-brand-border px-3 text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
+                className="h-11 w-full rounded-sm border border-brand-stone px-3 text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
               />
             </label>
             <label className="flex-1">
@@ -124,7 +124,7 @@ export function FilterSheet({ open, onClose, categories, countBasis, currentFilt
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, maxPrice: e.target.value ? Number(e.target.value) : undefined }))
                 }
-                className="h-11 w-full rounded-sm border border-brand-border px-3 text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
+                className="h-11 w-full rounded-sm border border-brand-stone px-3 text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
               />
             </label>
           </div>
@@ -166,9 +166,9 @@ function ChipButton({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        'h-9 rounded-sm border px-3 text-sm',
+        'h-11 rounded-sm border px-3 text-sm',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
-        selected ? 'border-brand-ink font-medium text-brand-ink' : 'border-brand-border text-brand-ink',
+        selected ? 'border-brand-ink font-medium text-brand-ink' : 'border-brand-stone text-brand-ink',
       )}
     >
       {children}

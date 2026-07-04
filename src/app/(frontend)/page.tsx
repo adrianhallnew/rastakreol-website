@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPayload } from 'payload'
@@ -9,9 +10,15 @@ import { buttonVariants } from '../../components/ui/button-variants'
 import { getWishlistedProductIds } from '../../lib/wishlist/actions'
 import type { Product } from '../../payload-types'
 
-export async function generateMetadata(): Promise<Metadata> {
+// cache(): generateMetadata and getHomepageData both need this — without it, every home
+// page load queried homepage-settings twice.
+const getHomepageSettings = cache(async () => {
   const payload = await getPayload({ config })
-  const homepage = await payload.findGlobal({ slug: 'homepage-settings', overrideAccess: true })
+  return payload.findGlobal({ slug: 'homepage-settings', overrideAccess: true })
+})
+
+export async function generateMetadata(): Promise<Metadata> {
+  const homepage = await getHomepageSettings()
   const heroImage = typeof homepage.hero?.image === 'object' ? homepage.hero.image : undefined
   const ogImageUrl = heroImage?.sizes?.card?.url || heroImage?.url
 
@@ -24,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 async function getHomepageData() {
   const payload = await getPayload({ config })
-  const homepage = await payload.findGlobal({ slug: 'homepage-settings', overrideAccess: true })
+  const homepage = await getHomepageSettings()
 
   let featured: Product[] = []
   if (homepage.sections?.show_featured !== false && homepage.featured_products?.length) {
@@ -66,13 +73,11 @@ export default async function HomePage() {
             alt={heroImage?.alt ?? ''}
             fill
             priority
-            unoptimized
             sizes="100vw"
             className="object-cover"
           />
           <div
-            className="absolute inset-x-0 bottom-0 h-2/5"
-            style={{ background: 'linear-gradient(to top, rgba(27,31,25,0.6), transparent)' }}
+            className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-brand-ink/60 to-transparent"
             aria-hidden="true"
           />
           <div className="relative z-10 px-4 pb-12">
@@ -114,8 +119,8 @@ export default async function HomePage() {
       {homepage.sections?.show_brand_story !== false && (
         <>
           <StripeMotif height={4} />
-          <section className="px-4 py-10 text-center">
-            <p className="mx-auto max-w-md text-brand-ink">
+          <section className="px-4 py-10">
+            <p className="max-w-md text-brand-ink">
               Rasta Kreol carries the colours of home — blue, gold, red, green — stitched into
               everyday wear for Seychellois at home and abroad. One love, one heart, one destiny.
             </p>

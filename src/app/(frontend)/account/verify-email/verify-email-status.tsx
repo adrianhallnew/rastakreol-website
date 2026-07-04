@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { verifyEmailAction } from '../actions'
+import { buttonVariants } from '../../../../components/ui/button-variants'
 
 type Status = 'pending' | 'success' | 'error'
 
@@ -28,16 +29,17 @@ export function VerifyEmailStatus({ token }: { token: string }) {
   }
 
   if (status === 'error') {
-    return <p className="mt-6 text-red-600">{error}</p>
+    return (
+      <p className="mt-6 text-brand-error" role="alert">
+        {error}
+      </p>
+    )
   }
 
   return (
     <div className="mt-6 flex flex-col gap-4">
       <p className="text-brand-ink">Your email is verified.</p>
-      <Link
-        href="/account/login"
-        className="rounded-md bg-brand-gold px-6 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-brand-gold-warm"
-      >
+      <Link href="/account/login" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'text-center' })}>
         Log in
       </Link>
     </div>

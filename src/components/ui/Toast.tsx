@@ -30,7 +30,6 @@ export function Toast({ type, message, visible, onDismiss, onPause, onResume }: 
 
   return (
     <div
-      role={type === 'error' ? 'alert' : 'status'}
       onMouseEnter={onPause}
       onMouseLeave={onResume}
       onFocus={onPause}

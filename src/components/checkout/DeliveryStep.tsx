@@ -47,7 +47,7 @@ export function DeliveryStep({
       <fieldset className="flex flex-col gap-3">
         <legend className="text-xs font-medium uppercase tracking-[0.08em] text-brand-muted">Delivery method</legend>
 
-        <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md border border-brand-border px-3 py-2">
+        <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-sm border border-brand-stone px-3 py-2">
           <span className="flex items-center gap-3">
             <input
               type="radio"
@@ -61,7 +61,7 @@ export function DeliveryStep({
           <span className="text-sm text-brand-muted">{freeShipping ? 'Free' : formatPrice(courierRate)}</span>
         </label>
 
-        <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md border border-brand-border px-3 py-2">
+        <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-sm border border-brand-stone px-3 py-2">
           <span className="flex items-center gap-3">
             <input
               type="radio"
@@ -82,7 +82,7 @@ export function DeliveryStep({
             <select
               value={pickupIndex}
               onChange={(e) => setPickupIndex(Number(e.target.value))}
-              className="min-h-11 rounded-md border border-brand-ink/20 px-3 py-2 text-base"
+              className="min-h-11 rounded-sm border border-brand-stone px-3 py-2 text-base"
             >
               {pickupLocations.map((location, i) => (
                 <option key={location.name} value={i}>

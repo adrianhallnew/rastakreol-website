@@ -9,6 +9,7 @@ export function PDPDescription({ children }: { children: ReactNode }) {
   return (
     <div>
       <div
+        id="pdp-description-content"
         className="max-w-[65ch] space-y-3 overflow-hidden text-brand-ink"
         style={{ maxHeight: expanded ? 'none' : '6rem' }}
       >
@@ -16,6 +17,8 @@ export function PDPDescription({ children }: { children: ReactNode }) {
       </div>
       <button
         type="button"
+        aria-expanded={expanded}
+        aria-controls="pdp-description-content"
         onClick={() => setExpanded((v) => !v)}
         className="mt-2 text-sm font-medium text-brand-muted underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
       >

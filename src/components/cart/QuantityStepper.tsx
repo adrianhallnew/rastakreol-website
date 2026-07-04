@@ -11,7 +11,7 @@ interface QuantityStepperProps {
 }
 
 const stepperButtonClass = cn(
-  'flex h-11 w-11 items-center justify-center rounded-sm border border-brand-border text-brand-ink',
+  'flex h-11 w-11 items-center justify-center rounded-sm border border-brand-stone text-brand-ink',
   'disabled:opacity-40',
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
 )

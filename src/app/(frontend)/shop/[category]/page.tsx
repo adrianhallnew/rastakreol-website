@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -14,7 +15,9 @@ import { getWishlistedProductIds } from '../../../../lib/wishlist/actions'
 type RawSearchParams = Record<string, string | string[] | undefined>
 type Params = Promise<{ category: string }>
 
-async function getCategory(slug: string) {
+// cache(): generateMetadata and ShopCategoryPage both need this — without it, every
+// category page load queried the same category twice.
+const getCategory = cache(async (slug: string) => {
   const payload = await getPayload({ config })
   const result = await payload.find({
     collection: 'categories',
@@ -23,7 +26,7 @@ async function getCategory(slug: string) {
     limit: 1,
   })
   return result.docs[0]
-}
+})
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { category: slug } = await params

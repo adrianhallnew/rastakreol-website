@@ -3,9 +3,10 @@
 import { useActionState, useEffect } from 'react'
 import { updateProfileAction } from '../../lib/customer/actions'
 import { Button } from '../ui/Button'
+import { RequiredMark } from '../ui/RequiredMark'
 import type { Customer } from '../../payload-types'
 
-const inputClass = 'rounded-md border border-brand-ink/20 px-3 py-2 text-base min-h-11'
+const inputClass = 'rounded-sm border border-brand-stone px-3 py-2 text-base min-h-11'
 const labelClass = 'flex flex-col gap-1 text-sm text-brand-ink'
 
 interface AddressStepProps {
@@ -28,7 +29,10 @@ export function AddressStep({ customer, onContinue }: AddressStepProps) {
       <fieldset className="flex flex-col gap-4">
         <legend className="text-xs font-medium uppercase tracking-[0.08em] text-brand-muted">Contact</legend>
         <label className={labelClass}>
-          Name
+          <span>
+            Name
+            <RequiredMark />
+          </span>
           <input name="name" type="text" required defaultValue={customer.name} className={inputClass} />
         </label>
         <label className={labelClass}>
@@ -63,7 +67,11 @@ export function AddressStep({ customer, onContinue }: AddressStepProps) {
         </label>
       </fieldset>
 
-      {state?.success === false && <p className="text-sm text-red-600" role="alert">{state.error}</p>}
+      {state?.success === false && (
+        <p className="text-sm text-brand-error" role="alert">
+          {state.error}
+        </p>
+      )}
 
       <Button type="submit" size="lg" loading={pending} className="w-full">
         Continue

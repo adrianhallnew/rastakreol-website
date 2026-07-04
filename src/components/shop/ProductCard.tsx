@@ -24,53 +24,64 @@ export function ProductCard({ product, isWishlisted = false }: ProductCardProps)
 
   const onSale = product.on_sale && product.sale_price != null
 
+  const price = formatPrice(onSale ? product.sale_price! : product.price)
+  const stateSuffix = onSale
+    ? ', on sale'
+    : isOutOfStock
+      ? ', out of stock'
+      : isLowStock
+        ? `, only ${totalStock} left`
+        : ''
+
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      aria-label={`${product.name}, ${formatPrice(onSale ? product.sale_price! : product.price)}`}
-      className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
-    >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-brand-paper shadow-card">
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            alt={imageAlt ?? product.name}
-            fill
-            loading="lazy"
-            // Payload's storage plugin already renders sized/compressed WebP variants
-            // via Sharp at upload time — re-optimizing through Next's own pipeline is
-            // redundant, and blocks local-dev media serving outright (Next's optimizer
-            // refuses to fetch from private/loopback IPs, which localhost resolves to).
-            unoptimized
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={`object-cover transition-transform duration-[var(--motion-state)] ease-out-quart group-hover:scale-[1.015] ${isOutOfStock ? 'opacity-40' : ''}`}
-          />
-        )}
-        <WishlistButtonToggle productId={product.id} productName={product.name} initiallySaved={isWishlisted} />
-        {isOutOfStock && (
-          <span className="absolute left-2 top-2">
-            <Badge variant="oos">Out of stock</Badge>
-          </span>
-        )}
-        {!isOutOfStock && onSale && (
-          <span className="absolute left-2 top-2">
-            <Badge variant="sale">Sale</Badge>
-          </span>
-        )}
-      </div>
-      <div className="mt-3 space-y-1">
-        {category && <Badge variant="category">{category.name}</Badge>}
-        <h3 className="line-clamp-2 font-display text-lg font-semibold text-brand-ink">{product.name}</h3>
-        {onSale ? (
-          <div className="flex items-center gap-2">
-            <span className="text-base font-medium text-brand-ink">{formatPrice(product.sale_price!)}</span>
-            <span className="text-sm text-brand-muted line-through">{formatPrice(product.price)}</span>
-          </div>
-        ) : (
-          <p className="text-base font-medium text-brand-ink">{formatPrice(product.price)}</p>
-        )}
-        {isLowStock && <Badge variant="low-stock">Only {totalStock} left</Badge>}
-      </div>
-    </Link>
+    <div className="group relative">
+      <Link
+        href={`/products/${product.slug}`}
+        aria-label={`${product.name}, ${price}${stateSuffix}`}
+        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
+      >
+        <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-brand-paper shadow-card">
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt={imageAlt ?? product.name}
+              fill
+              loading="lazy"
+              // Payload's storage plugin already renders sized/compressed WebP variants
+              // via Sharp at upload time — re-optimizing through Next's own pipeline is
+              // redundant, and blocks local-dev media serving outright (Next's optimizer
+              // refuses to fetch from private/loopback IPs, which localhost resolves to).
+              unoptimized
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className={`object-cover transition-transform duration-[var(--motion-state)] ease-out-quart group-hover:scale-[1.015] ${isOutOfStock ? 'opacity-40' : ''}`}
+            />
+          )}
+          {isOutOfStock && (
+            <span className="absolute left-2 top-2">
+              <Badge variant="oos">Out of stock</Badge>
+            </span>
+          )}
+          {!isOutOfStock && onSale && (
+            <span className="absolute left-2 top-2">
+              <Badge variant="sale">Sale</Badge>
+            </span>
+          )}
+        </div>
+        <div className="mt-3 space-y-1">
+          {category && <Badge variant="category">{category.name}</Badge>}
+          <h3 className="line-clamp-2 font-display text-lg font-semibold text-brand-ink">{product.name}</h3>
+          {onSale ? (
+            <div className="flex items-center gap-2">
+              <span className="text-base font-medium text-brand-ink">{formatPrice(product.sale_price!)}</span>
+              <span className="text-sm text-brand-muted line-through">{formatPrice(product.price)}</span>
+            </div>
+          ) : (
+            <p className="text-base font-medium text-brand-ink">{formatPrice(product.price)}</p>
+          )}
+          {isLowStock && <Badge variant="low-stock">Only {totalStock} left</Badge>}
+        </div>
+      </Link>
+      <WishlistButtonToggle productId={product.id} productName={product.name} initiallySaved={isWishlisted} />
+    </div>
   )
 }

@@ -29,6 +29,7 @@ export function ShopResults({
   const [hasNextPage, setHasNextPage] = useState(initialHasNextPage)
   const [page, setPage] = useState(1)
   const [isPending, startTransition] = useTransition()
+  const [announcement, setAnnouncement] = useState('')
 
   const handleLoadMore = () => {
     startTransition(async () => {
@@ -36,6 +37,7 @@ export function ShopResults({
       setItems((prev) => [...prev, ...next.items])
       setHasNextPage(next.hasNextPage)
       setPage((p) => p + 1)
+      setAnnouncement(`${next.items.length} more product${next.items.length === 1 ? '' : 's'} loaded.`)
     })
   }
 
@@ -49,6 +51,9 @@ export function ShopResults({
           </Button>
         </div>
       )}
+      <p className="sr-only" role="status" aria-live="polite">
+        {announcement}
+      </p>
     </div>
   )
 }

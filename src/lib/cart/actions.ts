@@ -8,7 +8,7 @@ import { clearGuestCartId, getGuestCartId, getOrCreateGuestCartId } from './gues
 import { priceForVariant } from './price-for-variant'
 import type { Cart, Customer } from '../../payload-types'
 
-export type CartActionResult = { success: true } | { success: false; error: string }
+export type CartActionResult = { success: true; cartCount: number } | { success: false; error: string }
 
 function ownedCartWhere(customer: Customer | null, sessionId: string | null): Where | null {
   if (customer) return { customer: { equals: customer.id } }
@@ -88,7 +88,7 @@ export async function addToCartAction(
       },
       overrideAccess: true,
     })
-    return { success: true }
+    return { success: true, cartCount: quantity }
   }
 
   const items = [...(cart.items ?? [])]
@@ -103,7 +103,7 @@ export async function addToCartAction(
   }
 
   await payload.update({ collection: 'cart', id: cart.id, data: { items }, overrideAccess: true })
-  return { success: true }
+  return { success: true, cartCount: items.reduce((sum, i) => sum + i.quantity, 0) }
 }
 
 export async function updateCartItemQuantityAction(
@@ -121,7 +121,7 @@ export async function updateCartItemQuantityAction(
   if (quantity <= 0) {
     const newItems = items.filter((_, i) => i !== idx)
     await payload.update({ collection: 'cart', id: cart.id, data: { items: newItems }, overrideAccess: true })
-    return { success: true }
+    return { success: true, cartCount: newItems.reduce((sum, i) => sum + i.quantity, 0) }
   }
 
   const productId = typeof items[idx].product === 'object' ? items[idx].product.id : items[idx].product
@@ -132,7 +132,7 @@ export async function updateCartItemQuantityAction(
   const newItems = [...items]
   newItems[idx] = { ...newItems[idx], quantity, price_snapshot: priceForVariant(product, variant) }
   await payload.update({ collection: 'cart', id: cart.id, data: { items: newItems }, overrideAccess: true })
-  return { success: true }
+  return { success: true, cartCount: newItems.reduce((sum, i) => sum + i.quantity, 0) }
 }
 
 export async function removeCartItemAction(variantSku: string): Promise<CartActionResult> {

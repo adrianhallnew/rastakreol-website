@@ -4,9 +4,10 @@ import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateProfileAction } from '../../../../lib/customer/actions'
 import { buttonVariants } from '../../../../components/ui/button-variants'
+import { RequiredMark } from '../../../../components/ui/RequiredMark'
 import type { Customer } from '../../../../payload-types'
 
-const inputClass = 'rounded-md border border-brand-ink/20 px-3 py-2 text-base min-h-11'
+const inputClass = 'rounded-sm border border-brand-stone px-3 py-2 text-base min-h-11'
 const labelClass = 'flex flex-col gap-1 text-sm text-brand-ink'
 
 export function EditProfileForm({ customer }: { customer: Customer }) {
@@ -25,7 +26,10 @@ export function EditProfileForm({ customer }: { customer: Customer }) {
       <fieldset className="flex flex-col gap-4">
         <legend className="text-xs font-medium uppercase tracking-[0.08em] text-brand-muted">Contact</legend>
         <label className={labelClass}>
-          Name
+          <span>
+            Name
+            <RequiredMark />
+          </span>
           <input name="name" type="text" required defaultValue={customer.name} className={inputClass} />
         </label>
         <label className={labelClass}>
@@ -60,13 +64,13 @@ export function EditProfileForm({ customer }: { customer: Customer }) {
         </label>
       </fieldset>
 
-      {state?.success === false && <p className="text-sm text-red-600" role="alert">{state.error}</p>}
+      {state?.success === false && (
+        <p className="text-sm text-brand-error" role="alert">
+          {state.error}
+        </p>
+      )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className={buttonVariants({ variant: 'primary', size: 'lg', className: 'disabled:opacity-50' })}
-      >
+      <button type="submit" disabled={pending} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
         {pending ? 'Saving…' : 'Save changes'}
       </button>
     </form>

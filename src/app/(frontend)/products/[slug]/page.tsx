@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -14,7 +15,9 @@ import type { Media } from '../../../../payload-types'
 
 type Params = Promise<{ slug: string }>
 
-async function getProduct(slug: string) {
+// cache(): generateMetadata and ProductPage both need this — without it, every PDP load
+// queried the same product twice.
+const getProduct = cache(async (slug: string) => {
   const payload = await getPayload({ config })
   const result = await payload.find({
     collection: 'products',
@@ -23,7 +26,7 @@ async function getProduct(slug: string) {
     limit: 1,
   })
   return result.docs[0]
-}
+})
 
 async function getApprovedReviews(productId: number) {
   const payload = await getPayload({ config })
@@ -149,15 +152,18 @@ export default async function ProductPage({ params }: { params: Params }) {
             <ul className="mt-3 space-y-4">
               {reviews.slice(0, 2).map((review) => (
                 <li key={review.id} className="border-t border-brand-border pt-4">
-                  <div className="flex" aria-hidden="true">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star
-                        key={i}
-                        size={12}
-                        fill={i <= Number(review.rating) ? 'currentColor' : 'none'}
-                        className="text-brand-ink"
-                      />
-                    ))}
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex" aria-hidden="true">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <Star
+                          key={i}
+                          size={12}
+                          fill={i <= Number(review.rating) ? 'currentColor' : 'none'}
+                          className="text-brand-ink"
+                        />
+                      ))}
+                    </div>
+                    <span className="sr-only">{review.rating} out of 5 stars</span>
                   </div>
                   {review.title && <p className="mt-1 font-medium text-brand-ink">{review.title}</p>}
                   <p className="mt-1 text-sm text-brand-muted">{review.body}</p>

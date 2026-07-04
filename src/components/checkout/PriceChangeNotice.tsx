@@ -20,7 +20,7 @@ export function PriceChangeNotice({ items }: { items: StaleCartItem[] }) {
         await acknowledgeCartPriceChanges()
         router.refresh()
       } catch {
-        setError('Could not update prices. Please try again.')
+        setError('Could not update prices. Try again.')
       }
     })
   }
@@ -28,7 +28,7 @@ export function PriceChangeNotice({ items }: { items: StaleCartItem[] }) {
   return (
     <div className="px-4 py-8">
       <h1 className="font-display text-xl font-semibold text-brand-ink">Some prices have changed</h1>
-      <p className="mt-2 text-brand-muted">Please review before continuing to checkout.</p>
+      <p className="mt-2 text-brand-muted">Review before continuing to checkout.</p>
 
       <ul className="mt-6 divide-y divide-brand-border">
         {items.map((item) => (
@@ -44,7 +44,11 @@ export function PriceChangeNotice({ items }: { items: StaleCartItem[] }) {
         ))}
       </ul>
 
-      {error && <p className="mt-4 text-sm text-red-600" role="alert">{error}</p>}
+      {error && (
+        <p className="mt-4 text-sm text-brand-error" role="alert">
+          {error}
+        </p>
+      )}
 
       <Button className="mt-6 w-full" size="lg" loading={isPending} onClick={handleAcknowledge}>
         Update prices and continue

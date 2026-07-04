@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import type { MouseEvent } from 'react'
 import { Heart } from 'lucide-react'
 import { cn } from '../../lib/cn'
 import { useToast } from '../ui/toast-provider'
@@ -18,9 +17,7 @@ export function WishlistButtonToggle({ productId, productName, initiallySaved }:
   const [pending, setPending] = useState(false)
   const { toast } = useToast()
 
-  const handleClick = async (e: MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleClick = async () => {
     if (pending) return
 
     setPending(true)

@@ -7,10 +7,10 @@ import { usePathname } from 'next/navigation'
 import { ShoppingCart, User } from 'lucide-react'
 import { StripeMotif } from '../ui/StripeMotif'
 import { cn } from '../../lib/cn'
+import { useCartCount } from '../cart/CartCountProvider'
 
 interface TopNavProps {
   accountHref: string
-  cartCount: number
   logoUrl?: string
 }
 
@@ -19,9 +19,10 @@ const desktopLinks = [
   { label: 'Shop', href: '/shop', isActive: (p: string) => p.startsWith('/shop') },
 ]
 
-export function TopNav({ accountHref, cartCount, logoUrl }: TopNavProps) {
+export function TopNav({ accountHref, logoUrl }: TopNavProps) {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const { count: cartCount } = useCartCount()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 0)

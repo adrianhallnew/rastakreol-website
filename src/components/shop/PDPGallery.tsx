@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import type { PointerEvent } from 'react'
+import type { KeyboardEvent, PointerEvent } from 'react'
 import Image from 'next/image'
 import { cn } from '../../lib/cn'
 
@@ -20,6 +20,7 @@ const SWIPE_THRESHOLD_PX = 40
 export function PDPGallery({ images, productName }: PDPGalleryProps) {
   const [active, setActive] = useState(0)
   const startX = useRef<number | null>(null)
+  const dotRefs = useRef<(HTMLButtonElement | null)[]>([])
 
   if (images.length === 0) {
     return <div className="aspect-[4/5] w-full bg-brand-paper" aria-hidden="true" />
@@ -37,6 +38,15 @@ export function PDPGallery({ images, productName }: PDPGalleryProps) {
     else if (delta < -SWIPE_THRESHOLD_PX) setActive((i) => Math.min(images.length - 1, i + 1))
   }
 
+  const handleDotsKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    e.preventDefault()
+    const delta = e.key === 'ArrowRight' ? 1 : -1
+    const next = (active + delta + images.length) % images.length
+    setActive(next)
+    dotRefs.current[next]?.focus()
+  }
+
   return (
     <div>
       <div
@@ -49,27 +59,34 @@ export function PDPGallery({ images, productName }: PDPGalleryProps) {
           alt={images[active].alt || productName}
           fill
           priority
-          unoptimized
           sizes="100vw"
           className="object-cover"
         />
       </div>
 
       {images.length > 1 && (
-        <div className="mt-2 flex justify-center gap-2" role="tablist" aria-label="Product images">
+        <div
+          className="mt-2 flex justify-center"
+          role="tablist"
+          aria-label="Product images"
+          onKeyDown={handleDotsKeyDown}
+        >
           {images.map((img, i) => (
             <button
               key={img.url}
+              ref={(el) => {
+                dotRefs.current[i] = el
+              }}
               type="button"
               role="tab"
+              tabIndex={i === active ? 0 : -1}
               aria-selected={i === active}
               aria-label={`Image ${i + 1} of ${images.length}`}
               onClick={() => setActive(i)}
-              className={cn(
-                'h-2 w-2 rounded-full',
-                i === active ? 'bg-brand-ink' : 'bg-brand-border',
-              )}
-            />
+              className="flex h-11 w-11 items-center justify-center"
+            >
+              <span className={cn('h-2 w-2 rounded-full', i === active ? 'bg-brand-ink' : 'bg-brand-border')} />
+            </button>
           ))}
         </div>
       )}

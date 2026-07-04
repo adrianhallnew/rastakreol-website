@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Star } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { RequiredMark } from '../ui/RequiredMark'
 import { submitReviewAction } from '../../lib/reviews/actions'
 
 interface ReviewFormProps {
@@ -66,23 +67,26 @@ export function ReviewForm({ orderId, productId, productName }: ReviewFormProps)
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="min-h-11 rounded-md border border-brand-ink/20 px-3 py-2 text-base"
+          className="min-h-11 rounded-sm border border-brand-stone px-3 py-2 text-base"
         />
       </label>
 
       <label className="flex flex-col gap-1 text-sm text-brand-ink">
-        Review
+        <span>
+          Review
+          <RequiredMark />
+        </span>
         <textarea
           required
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={3}
-          className="rounded-md border border-brand-ink/20 px-3 py-2 text-base"
+          className="rounded-sm border border-brand-stone px-3 py-2 text-base"
         />
       </label>
 
       {error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-brand-error" role="alert">
           {error}
         </p>
       )}

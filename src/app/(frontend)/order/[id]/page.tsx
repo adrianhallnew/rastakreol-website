@@ -55,7 +55,7 @@ export default async function OrderConfirmationPage({ params }: { params: Params
 
   const stateCopy = {
     pending: {
-      icon: <Clock aria-hidden="true" size={48} className="text-brand-warning" />,
+      icon: <Clock aria-hidden="true" size={48} className="text-brand-ink" />,
       headline: 'Your order has been placed.',
       body: "Online payment isn't connected yet — we'll follow up to arrange payment. This order is saved and won't be lost.",
     },
@@ -94,7 +94,7 @@ export default async function OrderConfirmationPage({ params }: { params: Params
               ? 'flex items-center gap-1 text-brand-error'
               : paymentState === 'completed'
                 ? 'flex items-center gap-1 text-brand-green'
-                : 'flex items-center gap-1 text-brand-warning'
+                : 'flex items-center gap-1 text-brand-ink'
           }
         >
           {paymentState === 'failed' ? (

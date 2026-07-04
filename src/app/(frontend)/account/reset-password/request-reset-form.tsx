@@ -2,6 +2,11 @@
 
 import { useActionState } from 'react'
 import { requestPasswordResetAction } from '../actions'
+import { buttonVariants } from '../../../../components/ui/button-variants'
+import { RequiredMark } from '../../../../components/ui/RequiredMark'
+
+const inputClass = 'rounded-sm border border-brand-stone px-3 py-2 text-base min-h-11'
+const labelClass = 'flex flex-col gap-1 text-sm text-brand-ink'
 
 export function RequestResetForm() {
   const [state, formAction, pending] = useActionState(requestPasswordResetAction, null)
@@ -16,16 +21,19 @@ export function RequestResetForm() {
 
   return (
     <form action={formAction} className="mt-6 flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm text-brand-ink">
-        Email
-        <input name="email" type="email" required className="rounded-md border border-brand-ink/20 px-3 py-2 text-base" />
+      <label className={labelClass}>
+        <span>
+          Email
+          <RequiredMark />
+        </span>
+        <input name="email" type="email" required className={inputClass} />
       </label>
-      {state?.success === false && <p className="text-sm text-red-600">{state.error}</p>}
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-brand-gold px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-gold-warm disabled:opacity-50"
-      >
+      {state?.success === false && (
+        <p className="text-sm text-brand-error" role="alert">
+          {state.error}
+        </p>
+      )}
+      <button type="submit" disabled={pending} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
         {pending ? 'Sending…' : 'Send reset link'}
       </button>
     </form>

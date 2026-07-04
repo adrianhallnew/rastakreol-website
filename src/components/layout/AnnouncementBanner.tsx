@@ -45,7 +45,7 @@ export function AnnouncementBanner({ text, link }: AnnouncementBannerProps) {
   )
 
   return (
-    <div className="flex items-center justify-between gap-3 bg-brand-gold/20 px-4 py-2">
+    <div className="flex items-center justify-between gap-3 border-y border-brand-stone bg-brand-paper px-4 py-2">
       {link ? (
         <a href={link} className="flex-1">
           {content}

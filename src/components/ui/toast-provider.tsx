@@ -75,8 +75,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         className="pointer-events-none fixed inset-x-0 z-40 flex justify-center px-4"
         style={{ bottom: 'calc(var(--bottom-nav-height) + 16px)' }}
       >
-        {current && (
-          <div className="pointer-events-auto">
+        {/* Always mounted — a role/aria-live node that appears only once a toast exists is a
+            known cross-AT reliability gap versus one persistent region whose content updates. */}
+        <div
+          className="pointer-events-auto"
+          role={current?.type === 'error' ? 'alert' : 'status'}
+          aria-live={current?.type === 'error' ? 'assertive' : 'polite'}
+          aria-atomic="true"
+        >
+          {current && (
             <Toast
               type={current.type}
               message={current.message}
@@ -85,8 +92,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               onPause={pause}
               onResume={resume}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </ToastContext.Provider>
   )

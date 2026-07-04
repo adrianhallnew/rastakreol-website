@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -8,7 +9,9 @@ import type { Customer } from '../../payload-types'
 // verifyCustomerToken's own comment for why: payload.auth()'s CSRF/Origin check rejects a
 // legitimate same-origin request on iOS Safari for a Next.js-internal reason unrelated to
 // this app's actual security boundary (the JWT signature, verified here).
-export async function getCurrentCustomer(): Promise<Customer | null> {
+// cache(): called from layout.tsx, several cart/wishlist lookups, and page bodies within
+// the same request — without this each call re-verified the JWT and re-queried Postgres.
+export const getCurrentCustomer = cache(async (): Promise<Customer | null> => {
   const cookieStore = await cookies()
   const token = cookieStore.get('payload-token')?.value
   if (!token) return null
@@ -22,4 +25,4 @@ export async function getCurrentCustomer(): Promise<Customer | null> {
   } catch {
     return null
   }
-}
+})

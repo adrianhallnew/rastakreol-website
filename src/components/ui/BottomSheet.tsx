@@ -158,12 +158,23 @@ export function BottomSheet({ open, onClose, ariaLabel, children }: BottomSheetP
         ref={sheetRef}
         tabIndex={-1}
         className={cn(
+          // `fixed`, not `absolute` — an `absolute` child resolves `bottom-0` against
+          // the DIALOG's own box, and on real iOS Safari that box's inline 100dvh can
+          // paint at a stale/small size for one frame right after showModal() (before
+          // WebKit finishes recalculating the dynamic viewport), pinning this sheet near
+          // the top showing only its tail end until a later touch/scroll forces a
+          // relayout. A `fixed` ancestor does NOT establish a containing block for a
+          // `fixed` descendant (only transform/filter/perspective/will-change/contain
+          // do, and none of those sit between this div and the dialog) — so `fixed`
+          // here resolves straight against the true viewport regardless of whatever
+          // size the dialog's own box has at that instant.
+          //
           // svh, not vh — plain vh on iOS Safari is based on the LARGEST possible
           // viewport (chrome hidden), so 85vh can visually eat almost the entire
           // visible screen while the browser's own chrome is showing, reading as
           // "slides to the top" instead of a proper bottom sheet. svh is pinned to
           // the smallest possible viewport, so the cap holds regardless of chrome state.
-          'absolute inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-lg bg-brand-paper shadow-sheet',
+          'fixed inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-lg bg-brand-paper shadow-sheet',
           'transition-transform ease-drawer motion-reduce:transition-none',
           visible
             ? 'translate-y-0 duration-[var(--motion-layout)]'

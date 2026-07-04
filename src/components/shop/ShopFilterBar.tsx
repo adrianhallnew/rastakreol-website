@@ -69,7 +69,7 @@ export function ShopFilterBar({ categories, countBasis, currentFilters }: ShopFi
             type="button"
             onClick={() => setOpen(true)}
             className={cn(
-              'flex h-9 items-center gap-1.5 rounded-sm border border-brand-border px-3 text-sm font-medium text-brand-ink',
+              'flex h-11 items-center gap-1.5 rounded-sm border border-brand-stone px-3 text-sm font-medium text-brand-ink',
               'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
             )}
           >
@@ -85,7 +85,7 @@ export function ShopFilterBar({ categories, countBasis, currentFilters }: ShopFi
                 type="button"
                 onClick={() => removeChip(chip.next)}
                 className={cn(
-                  'flex h-8 flex-none items-center gap-1 rounded-sm border border-brand-border px-2.5 text-sm text-brand-ink',
+                  'flex h-11 flex-none items-center gap-1 rounded-sm border border-brand-stone px-2.5 text-sm text-brand-ink',
                   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
                 )}
               >

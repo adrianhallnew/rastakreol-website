@@ -4,6 +4,11 @@ import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { loginAction } from '../actions'
+import { buttonVariants } from '../../../../components/ui/button-variants'
+import { RequiredMark } from '../../../../components/ui/RequiredMark'
+
+const inputClass = 'rounded-sm border border-brand-stone px-3 py-2 text-base min-h-11'
+const labelClass = 'flex flex-col gap-1 text-sm text-brand-ink'
 
 export function LoginForm({ redirectTo }: { redirectTo: string }) {
   const [state, formAction, pending] = useActionState(loginAction, null)
@@ -18,30 +23,31 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
 
   return (
     <form action={formAction} className="mt-6 flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm text-brand-ink">
-        Email
-        <input name="email" type="email" required className="rounded-md border border-brand-ink/20 px-3 py-2 text-base" />
+      <label className={labelClass}>
+        <span>
+          Email
+          <RequiredMark />
+        </span>
+        <input name="email" type="email" required className={inputClass} />
       </label>
-      <label className="flex flex-col gap-1 text-sm text-brand-ink">
-        Password
-        <input
-          name="password"
-          type="password"
-          required
-          className="rounded-md border border-brand-ink/20 px-3 py-2 text-base"
-        />
+      <label className={labelClass}>
+        <span>
+          Password
+          <RequiredMark />
+        </span>
+        <input name="password" type="password" required className={inputClass} />
       </label>
-      {state?.success === false && <p className="text-sm text-red-600">{state.error}</p>}
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-brand-gold px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-gold-warm disabled:opacity-50"
-      >
+      {state?.success === false && (
+        <p className="text-sm text-brand-error" role="alert">
+          {state.error}
+        </p>
+      )}
+      <button type="submit" disabled={pending} className={buttonVariants({ variant: 'primary', size: 'lg' })}>
         {pending ? 'Logging in…' : 'Log in'}
       </button>
       <a
         href={`/api/customers/oauth/google?redirect=${encodeURIComponent(redirectTo)}`}
-        className="flex items-center justify-center gap-2 rounded-md border border-brand-ink/20 px-6 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-brand-ink/5"
+        className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'gap-2' })}
       >
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
           <path
