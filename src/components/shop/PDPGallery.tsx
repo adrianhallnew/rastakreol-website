@@ -59,6 +59,7 @@ export function PDPGallery({ images, productName }: PDPGalleryProps) {
           alt={images[active].alt || productName}
           fill
           priority
+          unoptimized
           sizes="100vw"
           className="object-cover"
         />
