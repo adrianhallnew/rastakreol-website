@@ -1,10 +1,19 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeValidateHook } from 'payload'
 import { isAdmin, isAdminOrManager } from '../lib/access'
+import { slugify } from '../lib/slugify'
+
+const generateSlug: CollectionBeforeValidateHook = ({ data }) => {
+  if (data && !data.slug && data.name) data.slug = slugify(data.name)
+  return data
+}
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
   admin: {
     useAsTitle: 'name',
+  },
+  hooks: {
+    beforeValidate: [generateSlug],
   },
   access: {
     read: () => true,

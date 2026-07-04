@@ -1,10 +1,22 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeDeleteHook } from 'payload'
 import { isAdmin, isStaff } from '../lib/access'
+
+const cleanupReads: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  await req.payload.delete({
+    collection: 'notifications-reads',
+    where: { notification: { equals: id } },
+    req,
+    overrideAccess: true,
+  })
+}
 
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
   admin: {
     useAsTitle: 'title',
+  },
+  hooks: {
+    beforeDelete: [cleanupReads],
   },
   access: {
     read: isStaff,

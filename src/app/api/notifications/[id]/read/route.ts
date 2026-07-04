@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { applyAuthHeaders, getCurrentStaff } from '../../../../../lib/auth/get-current-staff'
+import { getCurrentStaff } from '../../../../../lib/auth/get-current-staff'
 
 export async function POST(req: Request, context: { params: Promise<{ id: string }> }) {
-  const { user: staff, responseHeaders } = await getCurrentStaff(req.headers)
+  const { user: staff } = await getCurrentStaff(req.headers)
   if (!staff) {
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    applyAuthHeaders(res, responseHeaders)
-    return res
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { id } = await context.params
@@ -40,7 +38,5 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
     }
   }
 
-  const res = NextResponse.json({ ok: true })
-  applyAuthHeaders(res, responseHeaders)
-  return res
+  return NextResponse.json({ ok: true })
 }

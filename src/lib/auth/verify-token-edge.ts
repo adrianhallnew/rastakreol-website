@@ -29,3 +29,14 @@ export async function verifyCustomerToken(token: string): Promise<number | null>
     return null
   }
 }
+
+export async function verifyStaffToken(token: string): Promise<number | null> {
+  try {
+    const key = await deriveSigningKey(process.env.PAYLOAD_SECRET!)
+    const { payload } = await jwtVerify(token, key)
+    if (payload.collection !== 'users' || typeof payload.id !== 'number') return null
+    return payload.id
+  } catch {
+    return null
+  }
+}

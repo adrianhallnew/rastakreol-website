@@ -1,6 +1,12 @@
-import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
+import type { CollectionConfig, CollectionAfterChangeHook, CollectionBeforeValidateHook } from 'payload'
 import { isAdmin, isAdminOrManager } from '../lib/access'
 import { checkLowStockAndNotify } from '../hooks/notify'
+import { slugify } from '../lib/slugify'
+
+const generateSlug: CollectionBeforeValidateHook = ({ data }) => {
+  if (data && !data.slug && data.name) data.slug = slugify(data.name)
+  return data
+}
 
 const notifyLowStock: CollectionAfterChangeHook = async ({ doc, previousDoc, operation, req }) => {
   if (operation !== 'update' || !previousDoc) return doc
@@ -30,6 +36,7 @@ export const Products: CollectionConfig = {
     useAsTitle: 'name',
   },
   hooks: {
+    beforeValidate: [generateSlug],
     afterChange: [notifyLowStock],
   },
   access: {

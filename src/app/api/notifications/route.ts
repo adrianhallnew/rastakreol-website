@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { applyAuthHeaders, getCurrentStaff } from '../../../lib/auth/get-current-staff'
+import { getCurrentStaff } from '../../../lib/auth/get-current-staff'
 
 export async function GET(req: NextRequest) {
-  const { user: staff, responseHeaders } = await getCurrentStaff(req.headers)
+  const { user: staff } = await getCurrentStaff(req.headers)
   if (!staff) {
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    applyAuthHeaders(res, responseHeaders)
-    return res
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const payload = await getPayload({ config })
@@ -46,7 +44,5 @@ export async function GET(req: NextRequest) {
 
   const unreadCount = result.docs.filter((doc) => !readIds.has(doc.id)).length
 
-  const res = NextResponse.json({ notifications, unreadCount })
-  applyAuthHeaders(res, responseHeaders)
-  return res
+  return NextResponse.json({ notifications, unreadCount })
 }
