@@ -2,6 +2,7 @@ import React from 'react'
 import { ToastProvider } from '../../components/ui/toast-provider'
 import { TopNav } from '../../components/layout/TopNav'
 import { BottomNav } from '../../components/layout/BottomNav'
+import { MainBottomInset } from '../../components/layout/MainBottomInset'
 import { getCurrentCustomer } from '../../lib/auth/get-current-customer'
 import { getCartItemCount } from '../../lib/cart/actions'
 import './styles.css'
@@ -24,10 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="bg-brand-cream text-brand-ink antialiased">
         <ToastProvider>
           <TopNav accountHref={accountHref} cartCount={cartCount} />
-          {/* BottomNav hides itself on /checkout/** and md:+, but this padding only accounts
-              for md:+ so far — harmless extra whitespace on /checkout at mobile widths for
-              now; batch 5 (checkout) can special-case it if needed. */}
-          <main className="main-bottom-inset">{children}</main>
+          <MainBottomInset>{children}</MainBottomInset>
           <BottomNav accountHref={accountHref} cartCount={cartCount} />
         </ToastProvider>
       </body>

@@ -5,6 +5,7 @@ import type { Where } from 'payload'
 import config from '@payload-config'
 import { getCurrentCustomer } from '../auth/get-current-customer'
 import { clearGuestCartId, getGuestCartId, getOrCreateGuestCartId } from './guest-session'
+import { priceForVariant } from './price-for-variant'
 import type { Cart, Customer } from '../../payload-types'
 
 export type CartActionResult = { success: true } | { success: false; error: string }
@@ -42,15 +43,6 @@ export async function getCart(depth = 0): Promise<Cart | null> {
 export async function getCartItemCount(): Promise<number> {
   const cart = await getCart()
   return (cart?.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
-}
-
-function priceForVariant(
-  product: { price: number; sale_price?: number | null; on_sale?: boolean | null },
-  variant: { price_override?: number | null },
-): number {
-  if (variant.price_override != null) return variant.price_override
-  if (product.on_sale && product.sale_price != null) return product.sale_price
-  return product.price
 }
 
 export async function addToCartAction(
@@ -145,6 +137,23 @@ export async function updateCartItemQuantityAction(
 
 export async function removeCartItemAction(variantSku: string): Promise<CartActionResult> {
   return updateCartItemQuantityAction(variantSku, 0)
+}
+
+// Called right after an order is created from the cart's contents — empties the line items
+// rather than deleting the cart doc itself (keeps the same doc/session_id around for the
+// customer's next shopping trip instead of minting a new one).
+export async function clearCart(): Promise<void> {
+  const payload = await getPayload({ config })
+  const { cart } = await getOwnedCart()
+  if (!cart) return
+  await payload.update({ collection: 'cart', id: cart.id, data: { items: [] }, overrideAccess: true })
+}
+
+// Exposed for the price-staleness check (src/lib/cart/price-staleness.ts) and checkout's order
+// creation — both need the caller's cart with product/variant data resolved.
+export async function getOwnedCartWithProducts(): Promise<{ cart: Cart | null; customer: Customer | null }> {
+  const { cart, customer } = await getOwnedCart(1) // depth 1: items[].product resolves to a full Product
+  return { cart, customer }
 }
 
 // Called right after a guest logs in or registers. Folds an existing guest cart (identified
