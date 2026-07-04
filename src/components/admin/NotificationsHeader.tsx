@@ -22,7 +22,7 @@ export const NotificationsHeader = () => {
     let cancelled = false
 
     const load = async () => {
-      const res = await fetch('/api/notifications')
+      const res = await fetch('/api/staff-notifications')
       if (!res.ok || cancelled) return
       const data = await res.json()
       if (cancelled) return
@@ -42,7 +42,7 @@ export const NotificationsHeader = () => {
   const markRead = async (id: number) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
     setUnreadCount((prev) => Math.max(0, prev - 1))
-    await fetch(`/api/notifications/${id}/read`, { method: 'POST' })
+    await fetch(`/api/staff-notifications/${id}/read`, { method: 'POST' })
   }
 
   return (

@@ -60,6 +60,7 @@ export const Products: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      validate: (): true => true,
     },
     {
       name: 'description',
