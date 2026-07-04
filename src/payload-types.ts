@@ -112,11 +112,13 @@ export interface Config {
     'site-settings': SiteSetting;
     'homepage-settings': HomepageSetting;
     'shipping-settings': ShippingSetting;
+    'about-settings': AboutSetting;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'homepage-settings': HomepageSettingsSelect<false> | HomepageSettingsSelect<true>;
     'shipping-settings': ShippingSettingsSelect<false> | ShippingSettingsSelect<true>;
+    'about-settings': AboutSettingsSelect<false> | AboutSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -480,9 +482,13 @@ export interface Wishlist {
 export interface Review {
   id: number;
   product: number | Product;
+  /**
+   * Verified-purchase link — spec 3.11 requires a review to be tied to a completed order.
+   */
+  order: number | Order;
   customer: number | Customer;
   rating: '1' | '2' | '3' | '4' | '5';
-  title: string;
+  title?: string | null;
   body: string;
   approved?: boolean | null;
   updatedAt: string;
@@ -910,6 +916,7 @@ export interface WishlistSelect<T extends boolean = true> {
  */
 export interface ReviewsSelect<T extends boolean = true> {
   product?: T;
+  order?: T;
   customer?: T;
   rating?: T;
   title?: T;
@@ -1069,6 +1076,18 @@ export interface ShippingSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-settings".
+ */
+export interface AboutSetting {
+  id: number;
+  headline?: string | null;
+  body?: string | null;
+  image?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -1131,6 +1150,18 @@ export interface ShippingSettingsSelect<T extends boolean = true> {
         enabled?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-settings_select".
+ */
+export interface AboutSettingsSelect<T extends boolean = true> {
+  headline?: T;
+  body?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { CartLineItem } from './CartLineItem'
 import { CartSummary } from './CartSummary'
 import { EmptyState } from '../ui/EmptyState'
+import { StripeMotif } from '../ui/StripeMotif'
 import { useToast } from '../ui/toast-provider'
 import { updateCartItemQuantityAction, removeCartItemAction } from '../../lib/cart/actions'
 import type { CartLineItemData } from './CartLineItem'
@@ -54,12 +55,15 @@ export function CartContents({ initialItems }: CartContentsProps) {
 
   if (items.length === 0) {
     return (
-      <EmptyState
-        heading="Your cart is empty"
-        body="Browse the collection and add what you love."
-        ctaLabel="Shop now"
-        ctaHref="/shop"
-      />
+      <>
+        <StripeMotif height={4} />
+        <EmptyState
+          heading="Your cart is empty"
+          body="Browse the collection and add what you love."
+          ctaLabel="Shop now"
+          ctaHref="/shop"
+        />
+      </>
     )
   }
 
@@ -76,6 +80,7 @@ export function CartContents({ initialItems }: CartContentsProps) {
           />
         ))}
       </div>
+      <StripeMotif height={2} />
       <CartSummary subtotal={subtotal} />
     </div>
   )

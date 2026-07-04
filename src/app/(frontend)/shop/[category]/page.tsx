@@ -8,6 +8,7 @@ import { parseShopFilters } from '../../../../lib/shop/parse-filters'
 import { ShopFilterBar } from '../../../../components/shop/ShopFilterBar'
 import { ShopResults } from '../../../../components/shop/ShopResults'
 import { EmptyState } from '../../../../components/ui/EmptyState'
+import { StripeMotif } from '../../../../components/ui/StripeMotif'
 import { getWishlistedProductIds } from '../../../../lib/wishlist/actions'
 
 type RawSearchParams = Record<string, string | string[] | undefined>
@@ -66,6 +67,7 @@ export default async function ShopCategoryPage({
         <h1 className="font-display text-2xl font-bold text-brand-ink">{category.name}</h1>
       </div>
       <ShopFilterBar categories={categories} countBasis={countBasis} currentFilters={filters} />
+      <StripeMotif height={4} />
       <div className="px-4 py-4">
         {page.items.length === 0 ? (
           catalogEmpty ? (

@@ -4,6 +4,8 @@ import * as migration_20260702_081339 from './20260702_081339';
 import * as migration_20260702_091709 from './20260702_091709';
 import * as migration_20260703_042118_phase3_admin_cms from './20260703_042118_phase3_admin_cms';
 import * as migration_20260703_082802_products_sale_price from './20260703_082802_products_sale_price';
+import * as migration_20260704_035752_reviews_order_field from './20260704_035752_reviews_order_field';
+import * as migration_20260704_040257_about_settings_global from './20260704_040257_about_settings_global';
 
 export const migrations = [
   {
@@ -34,6 +36,16 @@ export const migrations = [
   {
     up: migration_20260703_082802_products_sale_price.up,
     down: migration_20260703_082802_products_sale_price.down,
-    name: '20260703_082802_products_sale_price'
+    name: '20260703_082802_products_sale_price',
+  },
+  {
+    up: migration_20260704_035752_reviews_order_field.up,
+    down: migration_20260704_035752_reviews_order_field.down,
+    name: '20260704_035752_reviews_order_field',
+  },
+  {
+    up: migration_20260704_040257_about_settings_global.up,
+    down: migration_20260704_040257_about_settings_global.down,
+    name: '20260704_040257_about_settings_global'
   },
 ];

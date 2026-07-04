@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPayload } from 'payload'
@@ -7,6 +8,19 @@ import { ProductGrid } from '../../components/shop/ProductGrid'
 import { buttonVariants } from '../../components/ui/button-variants'
 import { getWishlistedProductIds } from '../../lib/wishlist/actions'
 import type { Product } from '../../payload-types'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const payload = await getPayload({ config })
+  const homepage = await payload.findGlobal({ slug: 'homepage-settings', overrideAccess: true })
+  const heroImage = typeof homepage.hero?.image === 'object' ? homepage.hero.image : undefined
+  const ogImageUrl = heroImage?.sizes?.card?.url || heroImage?.url
+
+  return {
+    description: homepage.hero?.headline || 'Seychelles-rooted merch. Tees, snapbacks, dad caps, bags, and bracelets.',
+    alternates: { canonical: '/' },
+    openGraph: ogImageUrl ? { images: [{ url: ogImageUrl }] } : undefined,
+  }
+}
 
 async function getHomepageData() {
   const payload = await getPayload({ config })

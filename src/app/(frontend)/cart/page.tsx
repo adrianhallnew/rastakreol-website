@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { StripeMotif } from '../../../components/ui/StripeMotif'
 import { CartContents } from '../../../components/cart/CartContents'
 import { getCart } from '../../../lib/cart/actions'
 import type { CartLineItemData } from '../../../components/cart/CartLineItem'
@@ -37,9 +36,7 @@ export default async function CartPage() {
       <div className="px-4 pt-6 text-center">
         <h1 className="font-display text-2xl font-bold text-brand-ink">Your cart</h1>
       </div>
-      <StripeMotif height={4} />
       <CartContents initialItems={items} />
-      <StripeMotif height={4} />
     </div>
   )
 }

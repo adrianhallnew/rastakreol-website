@@ -30,12 +30,24 @@ export const Reviews: CollectionConfig = {
     update: isAdminOrManager,
     delete: isAdmin,
   },
+  // Spec 3.11: "one review per product per order (DB enforced)" — not just an application
+  // check in submitReviewAction (src/lib/reviews/actions.ts).
+  indexes: [{ fields: ['product', 'order'], unique: true }],
   fields: [
     {
       name: 'product',
       type: 'relationship',
       relationTo: 'products',
       required: true,
+    },
+    {
+      name: 'order',
+      type: 'relationship',
+      relationTo: 'orders',
+      required: true,
+      admin: {
+        description: 'Verified-purchase link — spec 3.11 requires a review to be tied to a completed order.',
+      },
     },
     {
       name: 'customer',
@@ -58,7 +70,6 @@ export const Reviews: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      required: true,
     },
     {
       name: 'body',

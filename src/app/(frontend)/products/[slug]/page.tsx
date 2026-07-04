@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { Star } from 'lucide-react'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { Badge } from '../../../../components/ui/Badge'
+import { StripeMotif } from '../../../../components/ui/StripeMotif'
 import { PDPGallery } from '../../../../components/shop/PDPGallery'
 import { PDPAddToCart } from '../../../../components/shop/PDPAddToCart'
 import { PDPDescription } from '../../../../components/shop/PDPDescription'
@@ -80,6 +81,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   return (
     <div>
       <PDPGallery images={images} productName={product.name} />
+      <StripeMotif height={2} />
 
       {/* pb-32: rough clearance for the fixed StickyAddToCart bar below, which doesn't
           have a shared CSS-variable height the way BottomNav's --bottom-nav-height does
@@ -129,6 +131,8 @@ export default async function ProductPage({ params }: { params: Params }) {
           </div>
         )}
 
+        <StripeMotif height={2} />
+
         {product.description && (
           <div className="mt-6">
             <PDPDescription>
@@ -136,6 +140,8 @@ export default async function ProductPage({ params }: { params: Params }) {
             </PDPDescription>
           </div>
         )}
+
+        <StripeMotif height={2} />
 
         {reviews.length > 0 && (
           <section className="mt-8">
@@ -153,7 +159,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                       />
                     ))}
                   </div>
-                  <p className="mt-1 font-medium text-brand-ink">{review.title}</p>
+                  {review.title && <p className="mt-1 font-medium text-brand-ink">{review.title}</p>}
                   <p className="mt-1 text-sm text-brand-muted">{review.body}</p>
                 </li>
               ))}

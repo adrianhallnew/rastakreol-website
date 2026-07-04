@@ -11,6 +11,7 @@ import { cn } from '../../lib/cn'
 interface TopNavProps {
   accountHref: string
   cartCount: number
+  logoUrl?: string
 }
 
 const desktopLinks = [
@@ -18,7 +19,7 @@ const desktopLinks = [
   { label: 'Shop', href: '/shop', isActive: (p: string) => p.startsWith('/shop') },
 ]
 
-export function TopNav({ accountHref, cartCount }: TopNavProps) {
+export function TopNav({ accountHref, cartCount, logoUrl }: TopNavProps) {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
@@ -47,7 +48,15 @@ export function TopNav({ accountHref, cartCount }: TopNavProps) {
             'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink',
           )}
         >
-          <Image src="/logo.jpeg" alt="Rasta Kreol" width={32} height={32} className="rounded-full" priority />
+          <Image
+            src={logoUrl || '/logo.jpeg'}
+            alt="Rasta Kreol"
+            width={32}
+            height={32}
+            className="rounded-full"
+            priority
+            unoptimized={!!logoUrl}
+          />
         </Link>
 
         {/* Primary nav lives in BottomNav on mobile; at md:+ BottomNav hides, so this

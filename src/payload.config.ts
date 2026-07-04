@@ -24,6 +24,7 @@ import { ContactSubmissions } from './collections/ContactSubmissions'
 import { SiteSettings } from './globals/SiteSettings'
 import { HomepageSettings } from './globals/HomepageSettings'
 import { ShippingSettings } from './globals/ShippingSettings'
+import { AboutSettings } from './globals/AboutSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -52,7 +53,7 @@ export default buildConfig({
     NotificationsReads,
     ContactSubmissions,
   ],
-  globals: [SiteSettings, HomepageSettings, ShippingSettings],
+  globals: [SiteSettings, HomepageSettings, ShippingSettings, AboutSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
