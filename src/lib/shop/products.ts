@@ -7,7 +7,7 @@ import type { ShopFilters } from './match-filters'
 
 export type { ShopFilters }
 
-export const PAGE_SIZE = 12
+const PAGE_SIZE = 12
 
 // A single-city merch catalog is small (dozens to low hundreds of SKUs, not
 // thousands) — fetching the full category/price/status-matched set and doing

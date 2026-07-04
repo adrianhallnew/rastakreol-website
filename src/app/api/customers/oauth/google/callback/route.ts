@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
   if (!code) return fail('no_code')
 
   try {
-    // Exchange code for access token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -35,7 +34,6 @@ export async function GET(req: NextRequest) {
     const tokens = await tokenRes.json()
     if (!tokenRes.ok) return fail('token_exchange')
 
-    // Fetch Google user profile
     const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${tokens.access_token}` },
     })
