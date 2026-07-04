@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '../../lib/cn'
 
-export type BadgeVariant = 'oos' | 'category' | 'low-stock' | 'count' | 'sale'
+type BadgeVariant = 'oos' | 'category' | 'low-stock' | 'count' | 'sale'
 
 interface BadgeProps {
   variant: BadgeVariant

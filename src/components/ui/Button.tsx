@@ -7,9 +7,6 @@ import { cn } from '../../lib/cn'
 import { buttonVariants } from './button-variants'
 import type { ButtonSize, ButtonVariant } from './button-variants'
 
-export { buttonVariants }
-export type { ButtonVariant, ButtonSize }
-
 const spinnerSize: Record<ButtonSize, number> = {
   sm: 18,
   md: 20,
