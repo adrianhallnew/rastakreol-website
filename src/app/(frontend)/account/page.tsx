@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getCurrentCustomer } from '../../../lib/auth/get-current-customer'
@@ -12,6 +11,34 @@ import { formatPrice } from '../../../lib/format-price'
 import { formatSCT } from '../../../lib/timezone/format'
 
 export const metadata: Metadata = { title: 'My account' }
+
+const infoLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/shipping', label: 'Shipping & Delivery' },
+  { href: '/returns', label: 'Returns & Cancellations' },
+  { href: '/orders-payments', label: 'Orders & Payments' },
+  { href: '/terms', label: 'Terms & Conditions' },
+  { href: '/privacy', label: 'Privacy Policy' },
+]
+
+function InfoLinks() {
+  return (
+    <ul className="mt-4 space-y-3">
+      {infoLinks.map((link) => (
+        <li key={link.href}>
+          <Link
+            href={link.href}
+            className="text-sm font-medium text-brand-muted hover:text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
+          >
+            {link.label}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 async function getCustomerOrders(customerId: number) {
   const payload = await getPayload({ config })
@@ -27,7 +54,32 @@ async function getCustomerOrders(customerId: number) {
 
 export default async function AccountPage() {
   const customer = await getCurrentCustomer()
-  if (!customer) redirect('/account/login')
+
+  if (!customer) {
+    return (
+      <div className="px-6 py-8">
+        <h1 className="font-display text-2xl font-bold text-brand-ink">Account</h1>
+        <p className="mt-2 text-brand-muted">
+          Log in or create an account to view your orders and wishlist.
+        </p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Link href="/account/login" className={buttonVariants({ variant: 'primary', size: 'md' })}>
+            Log in
+          </Link>
+          <Link href="/account/register" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
+            Create account
+          </Link>
+        </div>
+
+        <StripeMotif height={2} />
+
+        <section className="py-6">
+          <h2 className="font-display text-lg font-semibold text-brand-ink">Info</h2>
+          <InfoLinks />
+        </section>
+      </div>
+    )
+  }
 
   const orders = await getCustomerOrders(customer.id)
 
@@ -78,6 +130,13 @@ export default async function AccountPage() {
           </button>
         </form>
       </div>
+
+      <StripeMotif height={2} />
+
+      <section className="py-6">
+        <h2 className="font-display text-lg font-semibold text-brand-ink">Info</h2>
+        <InfoLinks />
+      </section>
     </div>
   )
 }

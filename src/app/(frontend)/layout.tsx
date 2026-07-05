@@ -8,7 +8,6 @@ import { BottomNav } from '../../components/layout/BottomNav'
 import { MainBottomInset } from '../../components/layout/MainBottomInset'
 import { AnnouncementBanner } from '../../components/layout/AnnouncementBanner'
 import { CartCountProvider } from '../../components/cart/CartCountProvider'
-import { getCurrentCustomer } from '../../lib/auth/get-current-customer'
 import { getCartItemCount } from '../../lib/cart/actions'
 import './styles.css'
 
@@ -49,12 +48,7 @@ export async function generateMetadata() {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [customer, cartCount, siteSettings] = await Promise.all([
-    getCurrentCustomer(),
-    getCartItemCount(),
-    getSiteSettings(),
-  ])
-  const accountHref = customer ? '/account' : '/account/login'
+  const [cartCount, siteSettings] = await Promise.all([getCartItemCount(), getSiteSettings()])
 
   const logo = typeof siteSettings.logo === 'object' ? siteSettings.logo : undefined
   const logoUrl = logo?.url ?? undefined
@@ -67,9 +61,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {siteSettings.announcement?.enabled && siteSettings.announcement.text && (
               <AnnouncementBanner text={siteSettings.announcement.text} link={siteSettings.announcement.link} />
             )}
-            <TopNav accountHref={accountHref} logoUrl={logoUrl} />
+            <TopNav logoUrl={logoUrl} />
             <MainBottomInset>{children}</MainBottomInset>
-            <BottomNav accountHref={accountHref} />
+            <BottomNav />
           </ToastProvider>
         </CartCountProvider>
       </body>

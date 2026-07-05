@@ -9,10 +9,6 @@ import { Badge } from '../ui/Badge'
 import { cn } from '../../lib/cn'
 import { useCartCount } from '../cart/CartCountProvider'
 
-interface BottomNavProps {
-  accountHref: string
-}
-
 interface NavItem {
   label: string
   href: string
@@ -20,7 +16,7 @@ interface NavItem {
   isActive: (pathname: string) => boolean
 }
 
-export function BottomNav({ accountHref }: BottomNavProps) {
+export function BottomNav() {
   const pathname = usePathname()
   const { count: cartCount } = useCartCount()
 
@@ -35,7 +31,7 @@ export function BottomNav({ accountHref }: BottomNavProps) {
       icon: ShoppingCart,
       isActive: (p) => p.startsWith('/cart'),
     },
-    { label: 'Account', href: accountHref, icon: User, isActive: (p) => p.startsWith('/account') },
+    { label: 'Account', href: '/account', icon: User, isActive: (p) => p.startsWith('/account') },
   ]
 
   return (

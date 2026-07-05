@@ -127,7 +127,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/about"
-              className={buttonVariants({ variant: 'ghost', size: 'md', className: 'mt-4' })}
+              className="mt-4 inline-block text-sm font-medium text-brand-ink underline underline-offset-4 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-ink"
             >
               About us
             </Link>

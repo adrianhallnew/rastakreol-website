@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 // shouldn't reserve space for a nav that isn't rendered.
 export function MainBottomInset({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const hideBottomNav = pathname.startsWith('/checkout')
+  const isCheckout = pathname.startsWith('/checkout')
 
-  return <main className={hideBottomNav ? undefined : 'main-bottom-inset'}>{children}</main>
+  return <main className={isCheckout ? undefined : 'main-bottom-inset'}>{children}</main>
 }

@@ -10,7 +10,6 @@ import { cn } from '../../lib/cn'
 import { useCartCount } from '../cart/CartCountProvider'
 
 interface TopNavProps {
-  accountHref: string
   logoUrl?: string
 }
 
@@ -19,7 +18,7 @@ const desktopLinks = [
   { label: 'Shop', href: '/shop', isActive: (p: string) => p.startsWith('/shop') },
 ]
 
-export function TopNav({ accountHref, logoUrl }: TopNavProps) {
+export function TopNav({ logoUrl }: TopNavProps) {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const { count: cartCount } = useCartCount()
@@ -94,7 +93,7 @@ export function TopNav({ accountHref, logoUrl }: TopNavProps) {
             <ShoppingCart aria-hidden="true" size={22} />
           </Link>
           <Link
-            href={accountHref}
+            href="/account"
             aria-label="Account"
             className={cn(
               'hidden h-11 w-11 items-center justify-center rounded-sm text-brand-ink md:flex',
