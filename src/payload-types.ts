@@ -282,7 +282,7 @@ export interface Category {
   /**
    * URL-safe identifier. Used in /shop?category=[slug].
    */
-  slug: string;
+  slug?: string | null;
   image?: (number | null) | Media;
   sort_order?: number | null;
   visible?: boolean | null;
@@ -304,7 +304,7 @@ export interface Category {
 export interface Product {
   id: number;
   name: string;
-  slug: string;
+  slug?: string | null;
   description?: {
     root: {
       type: string;

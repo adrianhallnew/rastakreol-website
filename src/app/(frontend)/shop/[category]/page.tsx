@@ -51,17 +51,18 @@ export default async function ShopCategoryPage({
   const category = await getCategory(slug)
   if (!category) notFound()
 
+  const categorySlug = category.slug ?? slug
   const rawParams = await searchParams
-  const filters = parseShopFilters(rawParams, category.slug)
+  const filters = parseShopFilters(rawParams, categorySlug)
 
   const [categories, countBasis, page, wishlistedProductIds] = await Promise.all([
     queryVisibleCategories(),
     queryCountBasis(),
-    queryProducts(filters, 1, category.slug),
+    queryProducts(filters, 1, categorySlug),
     getWishlistedProductIds(),
   ])
 
-  const categoryTotal = countBasis.filter((item) => item.categorySlug === category.slug).length
+  const categoryTotal = countBasis.filter((item) => item.categorySlug === categorySlug).length
   const catalogEmpty = categoryTotal === 0
 
   return (
@@ -82,7 +83,7 @@ export default async function ShopCategoryPage({
             <EmptyState
               heading="No tees match these filters"
               ctaLabel="Clear filters"
-              ctaHref={`/shop/${category.slug}`}
+              ctaHref={`/shop/${categorySlug}`}
             />
           )
         ) : (
@@ -91,7 +92,7 @@ export default async function ShopCategoryPage({
             initialItems={page.items}
             initialHasNextPage={page.hasNextPage}
             filters={filters}
-            categorySlug={category.slug}
+            categorySlug={categorySlug}
             wishlistedProductIds={wishlistedProductIds}
           />
         )}

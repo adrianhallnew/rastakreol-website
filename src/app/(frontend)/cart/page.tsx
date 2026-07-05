@@ -20,7 +20,7 @@ export default async function CartPage() {
 
       return {
         variantSku: item.variant_sku,
-        productSlug: product.slug,
+        productSlug: product.slug ?? '',
         productName: product.name,
         size: item.size,
         quantity: item.quantity,

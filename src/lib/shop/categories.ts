@@ -11,5 +11,7 @@ export async function queryVisibleCategories() {
     limit: 100,
     select: { name: true, slug: true },
   })
-  return result.docs.map((c) => ({ slug: c.slug, name: c.name }))
+  return result.docs
+    .filter((c): c is typeof c & { slug: string } => !!c.slug)
+    .map((c) => ({ slug: c.slug, name: c.name }))
 }

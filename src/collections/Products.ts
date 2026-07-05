@@ -58,9 +58,7 @@ export const Products: CollectionConfig = {
     {
       name: 'slug',
       type: 'text',
-      required: true,
       unique: true,
-      validate: (): true => true,
     },
     {
       name: 'description',

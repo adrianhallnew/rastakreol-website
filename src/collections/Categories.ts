@@ -30,9 +30,7 @@ export const Categories: CollectionConfig = {
     {
       name: 'slug',
       type: 'text',
-      required: true,
       unique: true,
-      validate: (): true => true,
       admin: {
         description: 'URL-safe identifier. Used in /shop?category=[slug].',
       },
