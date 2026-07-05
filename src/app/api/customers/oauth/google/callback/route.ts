@@ -80,6 +80,7 @@ export async function GET(req: NextRequest) {
             password: crypto.randomBytes(32).toString('hex'),
           },
           overrideAccess: true,
+          disableVerificationEmail: true,
         })
       }
     }
