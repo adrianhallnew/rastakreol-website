@@ -44,3 +44,63 @@ export async function updateProfileAction(
     return { success: false, error: err instanceof Error ? err.message : 'Update failed.' }
   }
 }
+
+export async function updateContactAction(
+  _prevState: ProfileActionResult | null,
+  formData: FormData,
+): Promise<ProfileActionResult> {
+  const customer = await getCurrentCustomer()
+  if (!customer) return { success: false, error: 'Not logged in.' }
+
+  const name = String(formData.get('name') ?? '')
+  if (!name) return { success: false, error: 'Name is required.' }
+
+  const payload = await getPayload({ config })
+
+  try {
+    await payload.update({
+      collection: 'customers',
+      id: customer.id,
+      data: {
+        name,
+        phone: String(formData.get('phone') ?? ''),
+      },
+      overrideAccess: true,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Update failed.' }
+  }
+}
+
+export async function updateAddressAction(
+  _prevState: ProfileActionResult | null,
+  formData: FormData,
+): Promise<ProfileActionResult> {
+  const customer = await getCurrentCustomer()
+  if (!customer) return { success: false, error: 'Not logged in.' }
+
+  const payload = await getPayload({ config })
+
+  try {
+    await payload.update({
+      collection: 'customers',
+      id: customer.id,
+      data: {
+        address_line1: String(formData.get('address_line1') ?? ''),
+        address_line2: String(formData.get('address_line2') ?? ''),
+        district: String(formData.get('district') ?? ''),
+        island: (String(formData.get('island') ?? '') || undefined) as
+          | 'mahe'
+          | 'praslin'
+          | 'la_digue'
+          | 'other'
+          | undefined,
+      },
+      overrideAccess: true,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Update failed.' }
+  }
+}

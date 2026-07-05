@@ -6,7 +6,7 @@ const PUBLIC_ACCOUNT_PATHS = ['/account/login', '/account/register', '/account/v
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  if (pathname === '/account') {
+  if (pathname === '/account' || pathname === '/account/info') {
     return NextResponse.next()
   }
 
