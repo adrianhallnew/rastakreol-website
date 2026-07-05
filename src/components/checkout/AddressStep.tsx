@@ -4,6 +4,7 @@ import { useActionState, useEffect } from 'react'
 import { updateProfileAction } from '../../lib/customer/actions'
 import { Button } from '../ui/Button'
 import { RequiredMark } from '../ui/RequiredMark'
+import { DeliveryAddressFields } from '../customer/DeliveryAddressFields'
 import type { Customer } from '../../payload-types'
 
 const inputClass = 'rounded-sm border border-brand-stone px-3 py-2 text-base min-h-11'
@@ -43,28 +44,7 @@ export function AddressStep({ customer, onContinue }: AddressStepProps) {
 
       <fieldset className="flex flex-col gap-4">
         <legend className="text-xs font-medium uppercase tracking-[0.08em] text-brand-muted">Delivery address</legend>
-        <label className={labelClass}>
-          Address line 1
-          <input name="address_line1" type="text" defaultValue={customer.address_line1 ?? ''} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Address line 2
-          <input name="address_line2" type="text" defaultValue={customer.address_line2 ?? ''} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          District
-          <input name="district" type="text" defaultValue={customer.district ?? ''} className={inputClass} />
-        </label>
-        <label className={labelClass}>
-          Island
-          <select name="island" defaultValue={customer.island ?? ''} className={inputClass}>
-            <option value="">Select an island</option>
-            <option value="mahe">Mahé</option>
-            <option value="praslin">Praslin</option>
-            <option value="la_digue">La Digue</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
+        <DeliveryAddressFields customer={customer} />
       </fieldset>
 
       {state?.success === false && (
